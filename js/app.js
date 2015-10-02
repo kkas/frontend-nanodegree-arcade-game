@@ -73,16 +73,19 @@ var Player = function() {
     // Value of one step on the y-axis
     this.INCREMENT_VALUE_OF_Y = 83;
 
-    // Seems the sprite image has some top margin.
-    this.SPRITE_TOP_MARGIN = 10;
-
-    // Initial Position of the player.
-    this.x = this.INCREMENT_VALUE_OF_X * 2;
-    this.y = this.INCREMENT_VALUE_OF_Y * 5 - this.SPRITE_TOP_MARGIN;
+    // Set the player to the initial position.
+    this.resetPosition();
 
     // Default sprite image of the player.
     this.sprite = 'images/char-boy.png';
 };
+
+// Reset the position of the player to the initial postion.
+Player.prototype.resetPosition = function() {
+    this.x = this.INCREMENT_VALUE_OF_X * 2;
+    this.y = this.INCREMENT_VALUE_OF_Y * 5 - SPRITE_TOP_MARGIN;
+};
+
 Player.prototype.update = function() {};
 
 // TODO: Refactor with the enemy's one.
@@ -138,6 +141,7 @@ Player.prototype.handleInput = function(key) {
 var NUM_ENEMIES = 1,
     SPRITE_WIDTH = 101,
     SPRITE_HEIGHT = 171,
+    SPRITE_TOP_MARGIN = 10,
     allEnemies = [],
     player = new Player(),
     cnt;
