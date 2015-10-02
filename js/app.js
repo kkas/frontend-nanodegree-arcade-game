@@ -73,11 +73,17 @@ var Player = function() {
     // Value of one step on the y-axis
     this.INCREMENT_VALUE_OF_Y = 83;
 
-    // Set the player to the initial position.
-    this.resetPosition();
-
     // Default sprite image of the player.
     this.sprite = 'images/char-boy.png';
+
+    // Initialize the instance.
+    this.init();
+};
+
+// Whatever the initialization functions are defined here.
+Player.prototype.init = function() {
+    // Set this player's initial position.
+    this.resetPosition();
 };
 
 // Reset the position of the player to the initial postion.
