@@ -69,10 +69,12 @@ Enemy.prototype.render = function() {
 var Player = function() {
     this.INCREMENT_VALUE_OF_X = 101;
     this.INCREMENT_VALUE_OF_Y = 83;
-    // this.x = 205;
-    // this.y = 406;
-    this.x = 0;
-    this.y = -10; // Seems the sprite image has some top margin.
+
+    // Seems the sprite image has some top margin.
+    this.SPRITE_TOP_MARGIN = 10;
+    this.x = this.INCREMENT_VALUE_OF_X * 2;
+    this.y = this.INCREMENT_VALUE_OF_Y * 5 - this.SPRITE_TOP_MARGIN;
+
     this.sprite = 'images/char-boy.png';
 };
 Player.prototype.update = function() {};
