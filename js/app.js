@@ -67,16 +67,69 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 
 var Player = function() {
+    this.INCREMENT_VALUE_OF_X = 101;
+    this.INCREMENT_VALUE_OF_Y = 83;
+    // this.x = 205;
+    // this.y = 406;
+    this.x = 0;
+    this.y = -10; // Seems the sprite image has some top margin.
     this.sprite = 'images/char-boy.png';
 };
 Player.prototype.update = function() {};
-Player.prototype.render = function() {};
-Player.prototype.handleInput = function() {};
+
+// TODO: Refactor with the enemy's one.
+// Render the player on the screen, required method for game
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+//TODO: Refactor with the enemy's one.
+Player.prototype.canMoveOnX = function(step) {
+    console.log("this.x + step: " + (this.x + step));
+    return this.x + step >= 0 && this.x + step <= canvasSize.width - SPRITE_WIDTH;
+};
+
+Player.prototype.canMoveOnY = function(step) {
+    console.log("this.y + step: " + (this.y + step));
+    return this.y + step >= -30 && this.y + step < canvasSize.height - SPRITE_HEIGHT;
+};
+
+Player.prototype.handleInput = function(key) {
+    var step;
+
+    switch(key) {
+        case 'left':
+            step = this.INCREMENT_VALUE_OF_X * -1;
+            this.x += this.canMoveOnX(step) ? step : 0;
+            break;
+
+        case 'right':
+            step = this.INCREMENT_VALUE_OF_X;
+            this.x += this.canMoveOnX(step) ? step : 0;
+            break;
+
+        case 'up':
+            step = this.INCREMENT_VALUE_OF_Y * -1;
+            this.y += this.canMoveOnY(step) ? step : 0;
+            break;
+
+        case 'down':
+            step = this.INCREMENT_VALUE_OF_Y;
+            this.y += this.canMoveOnY(step) ? step : 0;
+            break;
+
+        default:
+            console.log('key is not supported: ' + key);
+            break;
+    }
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var NUM_ENEMIES = 1,
+    SPRITE_WIDTH = 101,
+    SPRITE_HEIGHT = 171,
     allEnemies = [],
     player = new Player(),
     cnt;
