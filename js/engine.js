@@ -181,4 +181,13 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+
+    /* Assign the canvas's sizes (width and height), so that the developer can
+     * use the size for something like determining if the enemy has moved out
+     * to the canvas.
+     */
+    global.canvasSize = {
+        'width': canvas.width,
+        'height': canvas.height
+    };
 })(this);
