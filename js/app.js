@@ -76,6 +76,17 @@ var Player = function() {
     // Default sprite image of the player.
     this.sprite = 'images/char-boy.png';
 
+    // These values are used to increment the player's position.
+    // When the position of the player needs to be updated, for
+    // example, when a key is pressed by the user,
+    // the incremental/decremental value will be stored.
+    // TODO: Check if this is allowed (there is a warning that
+    // assignment or function call is expected. But I wanted to
+    // have any initialization in init() and variables declaration
+    // is here for readability.)
+    this.xDelta;
+    this.yDelta;
+
     // Initialize the instance.
     this.init();
 };
@@ -84,15 +95,35 @@ var Player = function() {
 Player.prototype.init = function() {
     // Set this player's initial position.
     this.resetPosition();
+
+    // Set the initial value.
+    this.setDelta(0, 0);
 };
 
 // Reset the position of the player to the initial postion.
 Player.prototype.resetPosition = function() {
+    // The numbers 2 and 5 indicate colum num and row num respectively.
+    // The number starts from 0, so 2 will be the 3rd column, for example.
     this.x = this.INCREMENT_VALUE_OF_X * 2;
     this.y = this.INCREMENT_VALUE_OF_Y * 5 - SPRITE_TOP_MARGIN;
 };
 
-Player.prototype.update = function() {};
+// Update the player's position, required method for game
+Player.prototype.update = function() {
+    this.x += this.xDelta;
+    this.y += this.yDelta;
+
+    // Reset the delta counter.
+    this.setDelta(0, 0);
+};
+
+// Set deltas of x and y. When values are set to this property
+// the position of the player will be changed acording to this
+// value. It will be reset after the update of the position.
+Player.prototype.setDelta = function(xDelta, yDelta) {
+    this.xDelta = xDelta;
+    this.yDelta = yDelta;
+};
 
 // TODO: Refactor with the enemy's one.
 // Render the player on the screen, required method for game
@@ -117,22 +148,30 @@ Player.prototype.handleInput = function(key) {
     switch(key) {
         case 'left':
             step = this.INCREMENT_VALUE_OF_X * -1;
-            this.x += this.canMoveOnX(step) ? step : 0;
+            if (this.canMoveOnX(step)) {
+                this.setDelta(step, 0);
+            }
             break;
 
         case 'right':
             step = this.INCREMENT_VALUE_OF_X;
-            this.x += this.canMoveOnX(step) ? step : 0;
+            if (this.canMoveOnX(step)) {
+                this.setDelta(step, 0);
+            }
             break;
 
         case 'up':
             step = this.INCREMENT_VALUE_OF_Y * -1;
-            this.y += this.canMoveOnY(step) ? step : 0;
+            if (this.canMoveOnY(step)) {
+                this.setDelta(0, step);
+            }
             break;
 
         case 'down':
             step = this.INCREMENT_VALUE_OF_Y;
-            this.y += this.canMoveOnY(step) ? step : 0;
+            if (this.canMoveOnY(step)) {
+                this.setDelta(0, step);
+            }
             break;
 
         default:
