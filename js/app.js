@@ -9,6 +9,11 @@ var Enemy = function() {
     // Position of the enemy on the y-axis.
     this.y = 0;
 
+    this.top = this.y;
+    this.bottom = this.y + SPRITE_HEIGHT;
+    this.left = this.x;
+    this.right = this.x + SPRITE_WIDTH;
+
     // How much pixel the enemy moves per frame.
     this.enemyMovePerFrame = 50;
 
@@ -35,13 +40,34 @@ Enemy.prototype.setInitialPosition = function() {
     this.y = 60; // on the first row.
 };
 
+// Set the enemy's postion.
+Enemy.prototype.setPosition = function(x, y) {
+    this.x = x;
+    this.y = y;
+
+    // Calcurate and updates the top, bottom, right, and
+    // left coordinates based on the assigned x and y values.
+    this.top = this.y;
+    this.bottom = this.y + SPRITE_HEIGHT;
+    this.left = this.x;
+    this.right = this.x + SPRITE_WIDTH;
+};
+
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x += this.enemyMovePerFrame * dt;
+    this.setPosition(
+        this.x + this.enemyMovePerFrame * dt, this.y);
+
+    // Check to see if the enemy is colliding with the player.
+    if (this.isColliding(player)) {
+        console.log("Collision detected!");
+        resetGame();
+    }
+
     if (this.isOutOfFrame) {
         // Reset the position of the enemy.
         this.setInitialPosition();
@@ -62,6 +88,15 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+Enemy.prototype.isColliding = function(player) {
+    return (
+        this.top < player.bottom &&
+        this.left < player.right &&
+        this.bottom > player.top &&
+        this.right > player.left
+    );
+};
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -75,6 +110,11 @@ var Player = function() {
 
     // Default sprite image of the player.
     this.sprite = 'images/char-boy.png';
+
+    this.top = this.y;
+    this.bottom = this.y + SPRITE_HEIGHT;
+    this.left = this.x;
+    this.right = this.x + SPRITE_WIDTH;
 
     // These values are used to increment the player's position.
     // When the position of the player needs to be updated, for
@@ -108,10 +148,25 @@ Player.prototype.resetPosition = function() {
     this.y = this.INCREMENT_VALUE_OF_Y * 5 - SPRITE_TOP_MARGIN;
 };
 
+// Set the poistion of the player.
+// TODO: Refactor with enemy's one.
+Player.prototype.setPosition = function(x, y) {
+    this.x = x;
+    this.y = y;
+
+    // Calcurate and updates the top, bottom, right, and
+    // left coordinates based on the assigned x and y values.
+    this.top = this.y;
+    this.bottom = this.y + SPRITE_HEIGHT;
+    this.left = this.x;
+    this.right = this.x + SPRITE_WIDTH;
+};
+
 // Update the player's position, required method for game
 Player.prototype.update = function() {
-    this.x += this.xDelta;
-    this.y += this.yDelta;
+    // this.x += this.xDelta;
+    // this.y += this.yDelta;
+    this.setPosition(this.x + this.xDelta, this.y + this.yDelta);
 
     // Reset the delta counter.
     this.setDelta(0, 0);
@@ -209,3 +264,12 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+// Reset the game by resetting the positions of the player and the enemies.
+var resetGame = function() {
+    allEnemies.forEach(function(enemy){
+        enemy.setInitialPosition();
+    });
+
+    player.resetPosition();
+};
