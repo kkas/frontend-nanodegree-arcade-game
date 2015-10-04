@@ -1,5 +1,5 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(position, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -17,7 +17,7 @@ var Enemy = function() {
     this.right = 0;
 
     // How much pixel the enemy moves per frame.
-    this.enemyMovePerFrame = 50;
+    this.enemyMovePerFrame = speed;
 
     // True when the object is out of the canvas.
     this.isOutOfFrame = false;
@@ -26,20 +26,8 @@ var Enemy = function() {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
-    // Initialize the instance.
-    this.init();
-};
-
-// Whatever the initialization functions are defined here.
-Enemy.prototype.init = function() {
-    // Assign this enemy's initial position.
-    this.setInitialPosition();
-};
-
-// Sets the initial position of the enemy.
-Enemy.prototype.setInitialPosition = function() {
-    // on the first row.
-    this.setPosition(-200, SPRITE_HEIGHT * 1);
+    // Set the initial position of the enemy.
+    this.setPosition(position.x, position.y);
 };
 
 // Set the enemy's postion.
@@ -72,7 +60,7 @@ Enemy.prototype.update = function(dt) {
 
     if (this.isOutOfFrame) {
         // Reset the position of the enemy.
-        this.setInitialPosition();
+        this.setPosition(position.x, position.y);
 
         // Reset the flag for the next.
         this.isOutOfFrame = false;
@@ -257,12 +245,16 @@ var NUM_ENEMIES = 1,
     SPRITE_TOP_MARGIN = 20,
     allEnemies = [],
     player = new Player(),
-    cnt;
-
+    cnt,
+    position = {
+        "x": -200,
+        "y": SPRITE_HEIGHT * 1
+    };
 
 // Instantiates all of the enemies.
 for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
-    allEnemies.push(new Enemy());
+    // Set the enemy on the first row.
+    allEnemies.push(new Enemy(position, 50));
 }
 
 // This listens for key presses and sends the keys to your
@@ -281,7 +273,7 @@ document.addEventListener('keyup', function(e) {
 // Reset the game by resetting the positions of the player and the enemies.
 var resetGame = function() {
     allEnemies.forEach(function(enemy){
-        enemy.setInitialPosition();
+        enemy.setPosition(position, 50);
     });
 
     player.resetPosition();
