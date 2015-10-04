@@ -275,7 +275,7 @@ var getRandomIntInclusive = function(min, max) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var NUM_ENEMIES = 1,
+var NUM_ENEMIES = 5,
     SPRITE_WIDTH = 101,
     // SPRITE_HEIGHT = 171,
     SPRITE_HEIGHT = 83,
