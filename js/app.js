@@ -9,10 +9,12 @@ var Enemy = function() {
     // Position of the enemy on the y-axis.
     this.y = 0;
 
-    this.top = this.y;
-    this.bottom = this.y + SPRITE_HEIGHT;
-    this.left = this.x;
-    this.right = this.x + SPRITE_WIDTH;
+    // Coordinates of the enemy object on the canvas.
+    // Used for collision detection.
+    this.top = 0;
+    this.bottom = 0;
+    this.left = 0;
+    this.right = 0;
 
     // How much pixel the enemy moves per frame.
     this.enemyMovePerFrame = 50;
@@ -36,8 +38,8 @@ Enemy.prototype.init = function() {
 
 // Sets the initial position of the enemy.
 Enemy.prototype.setInitialPosition = function() {
-    this.x = -200;
-    this.y = 60; // on the first row.
+    // on the first row.
+    this.setPosition(-200, SPRITE_HEIGHT * 1);
 };
 
 // Set the enemy's postion.
@@ -85,7 +87,7 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
 };
 
 Enemy.prototype.isColliding = function(player) {
@@ -111,10 +113,18 @@ var Player = function() {
     // Default sprite image of the player.
     this.sprite = 'images/char-boy.png';
 
-    this.top = this.y;
-    this.bottom = this.y + SPRITE_HEIGHT;
-    this.left = this.x;
-    this.right = this.x + SPRITE_WIDTH;
+    // Position of the player on the x-axis.
+    this.x = 0;
+
+    // Position of the player on the y-axis.
+    this.y = 0;
+
+    // Coordinates of the enemy object on the canvas.
+    // Used for collision detection.
+    this.top = 0;
+    this.bottom = 0;
+    this.left = 0;
+    this.right = 0;
 
     // These values are used to increment the player's position.
     // When the position of the player needs to be updated, for
@@ -144,8 +154,10 @@ Player.prototype.init = function() {
 Player.prototype.resetPosition = function() {
     // The numbers 2 and 5 indicate colum num and row num respectively.
     // The number starts from 0, so 2 will be the 3rd column, for example.
-    this.x = this.INCREMENT_VALUE_OF_X * 2;
-    this.y = this.INCREMENT_VALUE_OF_Y * 5 - SPRITE_TOP_MARGIN;
+    this.setPosition(
+        this.INCREMENT_VALUE_OF_X * 2,
+        this.INCREMENT_VALUE_OF_Y * 5
+    );
 };
 
 // Set the poistion of the player.
@@ -183,7 +195,7 @@ Player.prototype.setDelta = function(xDelta, yDelta) {
 // TODO: Refactor with the enemy's one.
 // Render the player on the screen, required method for game
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
 };
 
 //TODO: Refactor with the enemy's one.
@@ -240,8 +252,9 @@ Player.prototype.handleInput = function(key) {
 // Place the player object in a variable called player
 var NUM_ENEMIES = 1,
     SPRITE_WIDTH = 101,
-    SPRITE_HEIGHT = 171,
-    SPRITE_TOP_MARGIN = 10,
+    // SPRITE_HEIGHT = 171,
+    SPRITE_HEIGHT = 83,
+    SPRITE_TOP_MARGIN = 20,
     allEnemies = [],
     player = new Player(),
     cnt;
