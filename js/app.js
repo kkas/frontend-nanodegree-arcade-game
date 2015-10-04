@@ -20,7 +20,7 @@ var Enemy = function(position, speed) {
     this.right = 0;
 
     // How much pixel the enemy moves per frame.
-    this.enemyMovePerFrame = speed;
+    this.enemyMovePerFrame = 0;
 
     // True when the object is out of the canvas.
     this.isOutOfFrame = false;
@@ -31,6 +31,9 @@ var Enemy = function(position, speed) {
 
     // Set the initial position of the enemy.
     this.setPosition(position);
+
+    // Set the initial speed of the enemy.
+    this.setSpeed(speed);
 };
 
 // Set the enemy's postion.
@@ -60,6 +63,11 @@ Enemy.prototype.setRandomPosition = function() {
         "x": this.INITIAL_X,
         "y": SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
     });
+};
+
+// Set the speed of the enemy.
+Enemy.prototype.setSpeed = function(speed) {
+    this.enemyMovePerFrame = speed;
 };
 
 // Update the enemy's position, required method for game
@@ -283,7 +291,12 @@ var NUM_ENEMIES = 1,
 // Instantiates all of the enemies.
 for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
     // Set the enemy on the first row.
-    allEnemies.push(new Enemy(position, 50));
+    allEnemies.push(
+        new Enemy(
+            position,
+            getRandomIntInclusive(50, 200)
+        )
+    );
 }
 
 // This listens for key presses and sends the keys to your
