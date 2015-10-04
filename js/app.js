@@ -30,13 +30,13 @@ var Enemy = function(position, speed) {
     this.sprite = 'images/enemy-bug.png';
 
     // Set the initial position of the enemy.
-    this.setPosition(position.x, position.y);
+    this.setPosition(position);
 };
 
 // Set the enemy's postion.
-Enemy.prototype.setPosition = function(x, y) {
-    this.x = x;
-    this.y = y;
+Enemy.prototype.setPosition = function(position) {
+    this.x = position.x;
+    this.y = position.y;
 
     // Calcurate and updates the top, bottom, right, and
     // left coordinates based on the assigned x and y values.
@@ -56,10 +56,10 @@ Enemy.prototype.setRandomPosition = function() {
 
     // Set row number ranging from 1 to 3 because I want the enemies appear
     // only on the stone fields. (row 1 to 3).
-    this.setPosition(
-        this.INITIAL_X,
-        SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
-    );
+    this.setPosition({
+        "x": this.INITIAL_X,
+        "y": SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
+    });
 };
 
 // Update the enemy's position, required method for game
@@ -68,8 +68,10 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.setPosition(
-        this.x + this.enemyMovePerFrame * dt, this.y);
+    this.setPosition({
+        "x": this.x + this.enemyMovePerFrame * dt,
+        "y": this.y
+    });
 
     // Check to see if the enemy is colliding with the player.
     if (this.isColliding(player)) {
@@ -254,6 +256,14 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+// This function was borrowed from the following document.
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+var getRandomIntInclusive = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -296,12 +306,4 @@ var resetGame = function() {
     });
 
     player.resetPosition();
-};
-
-// Returns a random integer between min (included) and max (included)
-// Using Math.round() will give you a non-uniform distribution!
-// This function was borrowed from the following document.
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-var getRandomIntInclusive = function(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
