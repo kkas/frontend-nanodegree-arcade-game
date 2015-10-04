@@ -9,9 +9,6 @@ var Enemy = function(position, speed) {
     // Position of the enemy on the y-axis.
     this.y = 0;
 
-    // Initial x position of the enemy.
-    this.INITIAL_X = -200;
-
     // Coordinates of the enemy object on the canvas.
     // Used for collision detection.
     this.top = 0;
@@ -49,22 +46,6 @@ Enemy.prototype.setPosition = function(position) {
     this.right = this.x + SPRITE_WIDTH;
 };
 
-// Assigns the random Position of the enemy.
-// This "random" means that choosing the position randomly from
-// the specific rows since the enemy's y coordinate should be somewhere
-// on the rows of the field.
-// I don't want to change the row number, so that it makes the enemues stay
-//  on the same row.
-Enemy.prototype.setRandomPosition = function() {
-
-    // Set row number ranging from 1 to 3 because I want the enemies appear
-    // only on the stone fields. (row 1 to 3).
-    this.setPosition({
-        "x": this.INITIAL_X,
-        "y": SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
-    });
-};
-
 // Set the speed of the enemy.
 Enemy.prototype.setSpeed = function(speed) {
     this.enemyMovePerFrame = speed;
@@ -88,8 +69,9 @@ Enemy.prototype.update = function(dt) {
     }
 
     if (this.isOutOfFrame) {
-        // Reset the position of the enemy.
-        this.setRandomPosition();
+        // Reset the position of the enemy by assigning random
+        // position.
+        this.setPosition(generateRandomEnemyPosition());
 
         // Reset the flag for the next.
         this.isOutOfFrame = false;
@@ -272,6 +254,21 @@ var getRandomIntInclusive = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+// Generates the random position for the enemy.
+// This "random" means that choosing the position randomly from
+// the specific rows since the enemy's y coordinate should be somewhere
+// on the rows of the field.
+// I don't want to change the row number, so that it makes the enemues stay
+//  on the same row.
+var generateRandomEnemyPosition = function() {
+    // Set row number ranging from 1 to 3 because I want the enemies appear
+    // only on the stone fields. (row 1 to 3).
+    return {
+        "x": ENEMY_INITIAL_X,
+        "y": SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
+    };
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -283,17 +280,14 @@ var NUM_ENEMIES = 5,
     allEnemies = [],
     player = new Player(),
     cnt,
-    position = {
-        "x": -200,
-        "y": SPRITE_HEIGHT * 1
-    };
+    ENEMY_INITIAL_X = -200;
 
 // Instantiates all of the enemies.
 for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
     // Set the enemy on the first row.
     allEnemies.push(
         new Enemy(
-            position,
+            generateRandomEnemyPosition(),
             getRandomIntInclusive(50, 200)
         )
     );
@@ -315,7 +309,9 @@ document.addEventListener('keyup', function(e) {
 // Reset the game by resetting the positions of the player and the enemies.
 var resetGame = function() {
     allEnemies.forEach(function(enemy){
-        enemy.setRandomPosition();
+        enemy.setPosition(
+            generateRandomEnemyPosition()
+        );
     });
 
     player.resetPosition();
