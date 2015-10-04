@@ -9,6 +9,9 @@ var Enemy = function(position, speed) {
     // Position of the enemy on the y-axis.
     this.y = 0;
 
+    // Initial x position of the enemy.
+    this.INITIAL_X = -200;
+
     // Coordinates of the enemy object on the canvas.
     // Used for collision detection.
     this.top = 0;
@@ -43,6 +46,22 @@ Enemy.prototype.setPosition = function(x, y) {
     this.right = this.x + SPRITE_WIDTH;
 };
 
+// Assigns the random Position of the enemy.
+// This "random" means that choosing the position randomly from
+// the specific rows since the enemy's y coordinate should be somewhere
+// on the rows of the field.
+// I don't want to change the row number, so that it makes the enemues stay
+//  on the same row.
+Enemy.prototype.setRandomPosition = function() {
+
+    // Set row number ranging from 1 to 3 because I want the enemies appear
+    // only on the stone fields. (row 1 to 3).
+    this.setPosition(
+        this.INITIAL_X,
+        SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
+    );
+};
+
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
@@ -60,7 +79,7 @@ Enemy.prototype.update = function(dt) {
 
     if (this.isOutOfFrame) {
         // Reset the position of the enemy.
-        this.setPosition(position.x, position.y);
+        this.setRandomPosition();
 
         // Reset the flag for the next.
         this.isOutOfFrame = false;
@@ -273,8 +292,16 @@ document.addEventListener('keyup', function(e) {
 // Reset the game by resetting the positions of the player and the enemies.
 var resetGame = function() {
     allEnemies.forEach(function(enemy){
-        enemy.setPosition(position, 50);
+        enemy.setRandomPosition();
     });
 
     player.resetPosition();
+};
+
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+// This function was borrowed from the following document.
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+var getRandomIntInclusive = function(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 };
