@@ -129,12 +129,8 @@ var Player = function() {
     // When the position of the player needs to be updated, for
     // example, when a key is pressed by the user,
     // the incremental/decremental value will be stored.
-    // TODO: Check if this is allowed (there is a warning that
-    // assignment or function call is expected. But I wanted to
-    // have any initialization in init() and variables declaration
-    // is here for readability.)
-    this.xDelta;
-    this.yDelta;
+    this.xDelta = 0;
+    this.yDelta = 0;
 
     // Initialize the instance.
     this.init();
