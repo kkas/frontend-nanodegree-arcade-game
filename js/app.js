@@ -175,8 +175,6 @@ Player.prototype.setPosition = function(x, y) {
 
 // Update the player's position, required method for game
 Player.prototype.update = function() {
-    // this.x += this.xDelta;
-    // this.y += this.yDelta;
     this.setPosition(this.x + this.xDelta, this.y + this.yDelta);
 
     // Reset the delta counter.
@@ -274,7 +272,6 @@ var generateRandomEnemyPosition = function() {
 // Place the player object in a variable called player
 var NUM_ENEMIES = 5,
     SPRITE_WIDTH = 101,
-    // SPRITE_HEIGHT = 171,
     SPRITE_HEIGHT = 83,
     SPRITE_TOP_MARGIN = 20,
     allEnemies = [],
