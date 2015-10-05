@@ -114,6 +114,12 @@ var Player = function() {
     this.left = 0;
     this.right = 0;
 
+    // Player's initial position.
+    // The numbers 2 and 5 indicate colum num and row num respectively.
+    // The number starts from 0, so 2 will be the 3rd column.
+    this.INITIAL_POSITION_X = this.INCREMENT_VALUE_OF_X * 2;
+    this.INITIAL_POSITION_Y = this.INCREMENT_VALUE_OF_Y * 5;
+
     // These values are used to increment the player's position.
     // When the position of the player needs to be updated, for
     // example, when a key is pressed by the user,
@@ -136,12 +142,10 @@ Player.prototype.init = function() {
 
 // Reset the position of the player to the initial postion.
 Player.prototype.resetPosition = function() {
-    // The numbers 2 and 5 indicate colum num and row num respectively.
-    // The number starts from 0, so 2 will be the 3rd column, for example.
     this.setPosition(
         {
-            "x": this.INCREMENT_VALUE_OF_X * 2,
-            "y": this.INCREMENT_VALUE_OF_Y * 5
+            "x": this.INITIAL_POSITION_X,
+            "y": this.INITIAL_POSITION_Y
         }
     );
 };
