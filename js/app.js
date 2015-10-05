@@ -265,6 +265,12 @@ var generateRandomEnemyPosition = function() {
     };
 };
 
+// Generates the possible enemies speed.
+var generateRandomEnemySpeed = function() {
+    return getRandomIntInclusive(
+        MIN_POSSIBLE_ENEMY_SPEED, MAX_POSSIBLE_ENEMY_SPEED);
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -272,8 +278,8 @@ var NUM_ENEMIES = 5,
     SPRITE_WIDTH = 101,
     SPRITE_HEIGHT = 83,
     SPRITE_TOP_MARGIN = 20,
-    MIN_ENEMY_SPEED = 50,
-    MAX_ENEMY_SPEED = 200,
+    MIN_POSSIBLE_ENEMY_SPEED = 50,
+    MAX_POSSIBLE_ENEMY_SPEED = 200,
     allEnemies = [],
     player = new Player(),
     cnt,
@@ -285,7 +291,7 @@ for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
     allEnemies.push(
         new Enemy(
             generateRandomEnemyPosition(),
-            getRandomIntInclusive(MIN_ENEMY_SPEED, MAX_ENEMY_SPEED)
+            generateRandomEnemySpeed()
         )
     );
 }
