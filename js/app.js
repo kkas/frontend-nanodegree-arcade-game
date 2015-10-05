@@ -146,7 +146,7 @@ Player.prototype.init = function() {
     this.resetPosition();
 
     // Set the initial value.
-    this.setDelta(0, 0);
+    this.resetDelta();
 };
 
 // Reset the position of the player to the initial postion.
@@ -169,7 +169,7 @@ Player.prototype.update = function() {
     );
 
     // Reset the delta counter.
-    this.setDelta(0, 0);
+    this.resetDelta();
 };
 
 // Set deltas of x and y. When values are set to this property
@@ -178,6 +178,11 @@ Player.prototype.update = function() {
 Player.prototype.setDelta = function(xDelta, yDelta) {
     this.xDelta = xDelta || 0;
     this.yDelta = yDelta || 0;
+};
+
+// Reset the delta.
+Player.prototype.resetDelta = function() {
+    this.setDelta();
 };
 
 //TODO: Refactor with the enemy's one.
