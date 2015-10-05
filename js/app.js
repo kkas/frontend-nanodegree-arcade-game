@@ -110,13 +110,13 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.setPosition({
-        "x": this.x + this.enemyMovePerFrame * dt,
-        "y": this.y
+        'x': this.x + this.enemyMovePerFrame * dt,
+        'y': this.y
     });
 
     // Check to see if the enemy is colliding with the player.
     if (this.isColliding(player)) {
-        console.log("Collision detected!");
+        console.log('Collision detected!');
         resetGame();
     }
 
@@ -213,8 +213,8 @@ Player.prototype.init = function() {
 Player.prototype.resetPosition = function() {
     this.setPosition(
         {
-            "x": this.INITIAL_POSITION_X,
-            "y": this.INITIAL_POSITION_Y
+            'x': this.INITIAL_POSITION_X,
+            'y': this.INITIAL_POSITION_Y
         }
     );
 };
@@ -228,8 +228,8 @@ Player.prototype.resetPosition = function() {
 Player.prototype.update = function() {
     this.setPosition(
         {
-            "x": this.x + this.xDelta,
-            "y": this.y + this.yDelta
+            'x': this.x + this.xDelta,
+            'y': this.y + this.yDelta
         }
     );
 
@@ -239,7 +239,7 @@ Player.prototype.update = function() {
     // Check to see if the player reaches the water.
     // If so, reset the game by moving the player to the initial location.
     if (this.hasReachedGoal()) {
-        console.log("The player has reached the water! Reset the game.");
+        console.log('The player has reached the water! Reset the game.');
         // I didn't call resetGame() here because I wanted only the player
         // to go back to the initial location.
         this.resetPosition();
@@ -401,7 +401,7 @@ var getRandomIntInclusive = function(min, max) {
 
 /**
  * Generates the random position for the enemy, global function.
- * This "random" means that choosing the position randomly from
+ * This 'random' means that choosing the position randomly from
  * the specific rows since the enemy's y coordinate should be somewhere
  * on the rows of the field.
  * I don't change the row number, so that it makes the enemues stay
@@ -412,8 +412,8 @@ var generateRandomEnemyPosition = function() {
     // Set row number ranging from 1 to 3 because I want the enemies appear
     // only on the stone fields. (row 1 to 3).
     return {
-        "x": ENEMY_INITIAL_X,
-        "y": SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
+        'x': ENEMY_INITIAL_X,
+        'y': SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
     };
 };
 
