@@ -189,8 +189,6 @@ var Engine = (function(global) {
      * to the canvas.
      */
     global.canvasSize = {
-        'width': canvas.width,
-        'height': canvas.height,
         'effectiveWidth': IMAGE_WIDTH * numCols,
         'effectiveHeight': IMAGE_HEIGHT * numRows
     };
