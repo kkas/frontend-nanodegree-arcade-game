@@ -176,8 +176,8 @@ Player.prototype.update = function() {
 // the position of the player will be changed acording to this
 // value. It will be reset after the update of the position.
 Player.prototype.setDelta = function(xDelta, yDelta) {
-    this.xDelta = xDelta;
-    this.yDelta = yDelta;
+    this.xDelta = xDelta || 0;
+    this.yDelta = yDelta || 0;
 };
 
 //TODO: Refactor with the enemy's one.
@@ -196,41 +196,49 @@ Player.prototype.canMoveOnY = function(step) {
     );
 };
 
+// Set Delta(next step) of x and y if the player is allowed
+// to move to the position.
+Player.prototype.setDeltaOrIgnore = function(dt_x, dt_y) {
+    var new_dt_x,
+        new_dt_y;
+
+    if (dt_x != undefined && this.canMoveOnX(dt_x)) {
+        new_dt_x = dt_x;
+    }
+
+    if (dt_y != undefined && this.canMoveOnY(dt_y)) {
+        new_dt_y = dt_y;
+    }
+
+    this.setDelta(new_dt_x, new_dt_y);
+};
+
 Player.prototype.handleInput = function(key) {
-    var step;
+    var step_x,
+        step_y;
 
     switch(key) {
         case 'left':
-            step = this.INCREMENT_VALUE_OF_X * -1;
-            if (this.canMoveOnX(step)) {
-                this.setDelta(step, 0);
-            }
+            step_x = this.INCREMENT_VALUE_OF_X * -1;
             break;
 
         case 'right':
-            step = this.INCREMENT_VALUE_OF_X;
-            if (this.canMoveOnX(step)) {
-                this.setDelta(step, 0);
-            }
+            step_x = this.INCREMENT_VALUE_OF_X;
             break;
 
         case 'up':
-            step = this.INCREMENT_VALUE_OF_Y * -1;
-            if (this.canMoveOnY(step)) {
-                this.setDelta(0, step);
-            }
+            step_y = this.INCREMENT_VALUE_OF_Y * -1;
             break;
 
         case 'down':
-            step = this.INCREMENT_VALUE_OF_Y;
-            if (this.canMoveOnY(step)) {
-                this.setDelta(0, step);
-            }
+            step_y = this.INCREMENT_VALUE_OF_Y;
             break;
 
         default:
             break;
     }
+
+    this.setDeltaOrIgnore(step_x, step_y);
 };
 
 // Returns a random integer between min (included) and max (included)
