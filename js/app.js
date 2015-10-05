@@ -292,7 +292,6 @@ Player.prototype.canMoveOnY = function(step) {
         this.bottom + step <= canvasSize.effectiveHeight;
 };
 
-
 /**
  * Sets delta(next step) values of x and y if the player's new location is
  * valid.
