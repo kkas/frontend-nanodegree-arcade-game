@@ -1,4 +1,9 @@
-// Superclass
+/**
+ * Creates a new charactor.
+ * This class is also a superclass of Enemy and Player classes
+ * @constructor
+ * @return {undefined}
+ */
 var Charactor = function() {
     // Position of the enemy on the x-axis.
     this.x = 0;
@@ -18,12 +23,22 @@ var Charactor = function() {
     // You need to call setSprite() to set the image.
     this.sprite = '';
 };
-// Set the sprite image.
+
+/**
+ * Sets the sprite of the charactor, shared method
+ * @param {String} sprite - The uri of the sprite with in relative format
+ * @return {undefined}
+ */
 Charactor.prototype.setSprite = function(sprite) {
     this.sprite = sprite;
 };
 
-// Set the position of the charactor.
+/**
+ * Sets the position of the charactor, shared method
+ * @param {Object} position - The object representing the position
+ * of the charactor. It must contain 'x' and 'y' properties
+ * @return {undefined}
+ */
 Charactor.prototype.setPosition = function(position) {
     this.x = position.x;
     this.y = position.y;
@@ -36,13 +51,22 @@ Charactor.prototype.setPosition = function(position) {
     this.right = this.x + SPRITE_WIDTH;
 };
 
-// Render the charactor on the screen, required method for game
+/**
+ * Renders the charactor on the screen, required method for game, shared method.
+ * @return {undefined}
+ */
 Charactor.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
 };
 
-// Enemies our player must avoid
-// Subclass of 'Charactor'
+/**
+ * Enemies our player must avoid.
+ * This class is a subclass of Charactor
+ * @constructor
+ * @param {Object} position - The object representing the position
+ * @param {Number} speed - The speed of the enemy.
+ * @return {undefined}
+ */
 var Enemy = function(position, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -65,13 +89,22 @@ var Enemy = function(position, speed) {
 Enemy.prototype = Object.create(Charactor.prototype);
 Enemy.prototype.constructor = Enemy;
 
-// Set the speed of the enemy.
+/**
+ * Sets the speed of the enemy.
+ * This value equals to the number of pixels the enemy moves
+ * per frame.
+ * @param {Number} speed - The enemy's speed.
+ * @return {undefined}
+ */
 Enemy.prototype.setSpeed = function(speed) {
     this.enemyMovePerFrame = speed;
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/**
+ * Updates the enemy's position, required method for game
+ * @param  {Number} dt - A time delta between ticks
+ * @return {undefined}
+ */
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
@@ -95,6 +128,17 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
+/**
+ * Checks if the enemy is colliding into the player
+ * I was looking for a way to detect collisions, and found this post below.
+ * https://discussions.udacity.com/t/player-bug-collision-problem/15068/4?u=kkas
+ *
+ * I watched the following video and came up with the code in this function.
+ * HTML5 Game Development - Physics - AABB Collision
+ * https://www.udacity.com/course/viewer#!/c-cs255/l-52265917/e-130215280/m-129941633
+ * @param  {Player}  player - The player object to check for collision.
+ * @return {Boolean} True if the enemy is collided.
+ */
 Enemy.prototype.isColliding = function(player) {
     return (
         this.top < player.bottom &&
@@ -107,7 +151,13 @@ Enemy.prototype.isColliding = function(player) {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-// Subclass of 'Charactor'
+
+/**
+ * Player we play.
+ * This class is a subclass of Charactor
+ * @constructor
+ * @return {undefined}
+ */
 var Player = function() {
     // Initialize the enemy using Superclass's constructor
     Charactor.call(this);
@@ -131,16 +181,23 @@ var Player = function() {
     // When the position of the player needs to be updated, for
     // example, when a key is pressed by the user,
     // the incremental/decremental value will be stored.
+    // The reason for having these properties are to wait
+    // for update() being called, in which these values are added to/subtracted
+    // from the position of the player.
     this.xDelta = 0;
     this.yDelta = 0;
 
-    // Initialize the instance.
+    // Initialize the instance by setting default values.
     this.init();
 };
 Player.prototype = Object.create(Charactor.prototype);
 Player.prototype.constructor = Player;
 
-// Whatever the initialization functions are defined here.
+/**
+ * Initializes the player.
+ * Whatever the initialization functions are defined here
+ * @return {undefined}
+ */
 Player.prototype.init = function() {
     // Set this player's initial position.
     this.resetPosition();
@@ -149,7 +206,10 @@ Player.prototype.init = function() {
     this.resetDelta();
 };
 
-// Reset the position of the player to the initial postion.
+/**
+ * Resets the position of the player to the initial postion.
+ * @return {undefined}
+ */
 Player.prototype.resetPosition = function() {
     this.setPosition(
         {
@@ -159,7 +219,10 @@ Player.prototype.resetPosition = function() {
     );
 };
 
-// Update the player's position, required method for game
+/**
+ * Updates the player's position, required method for game
+ * @return {undefined}
+ */
 Player.prototype.update = function() {
     this.setPosition(
         {
@@ -172,33 +235,71 @@ Player.prototype.update = function() {
     this.resetDelta();
 };
 
-// Set deltas of x and y. When values are set to this property
-// the position of the player will be changed acording to this
-// value. It will be reset after the update of the position.
+/**
+ * Set deltas of x and y. When values are set to this property the position
+ * of the player will be changed acording to this value on the next update().
+ * They will be reset after the update of the position.
+ * Sets the default value of '0' if undefined is passed for the argment.
+ * @param {Number} xDelta - The new delta for x. Sets 0 if undefined is passed.
+ * @param {Number} yDelta - The new delta for y. Sets 0 if undefined is passed.
+ * @return {undefined}
+ */
 Player.prototype.setDelta = function(xDelta, yDelta) {
     this.xDelta = xDelta || 0;
     this.yDelta = yDelta || 0;
 };
 
-// Reset the delta.
+/**
+ * Resets the delta to the initial values by calling setDelta() without
+ * parameters.
+ * @return {undefined}
+ */
 Player.prototype.resetDelta = function() {
     this.setDelta();
 };
 
-//TODO: Refactor with the enemy's one.
+/**
+ * Checks if the player can move to the left/right (on x-axis).
+ * This is similar to Player.canMoveOnY().
+ * It checks the new location by comparing the left and right boundaries of the
+ * field with the new locations, that are calculated by summing the 'step' and
+ * the current values of left and right.
+ * If the new value stays within the boundary, it returns true to indicate the
+ * player can move. Otherwise, returns false.
+ * @param  {Number} step - The number of pixels the player moves
+ * @return {Boolean} True if the player's new position stays within the field
+ * boundary. False, otherwise.
+ */
 Player.prototype.canMoveOnX = function(step) {
     return this.left + step >= 0 &&
         this.right + step <= canvasSize.effectiveWidth;
 };
 
-//
+/**
+ * Checks if the player can move to the left/right (on y-axis).
+ * This is similar to Player.canMoveOnX().
+ * It checks the new location by comparing the top and bottom boundaries of the
+ * field with the new locations, that are calculated by summing the 'step' and
+ * the current values of top and bottom.
+ * If the new value stays within the boundary, it returns true to indicate the
+ * player can move. Otherwise, returns false.
+ * @param  {Number} step - The number of pixels the player moves
+ * @return {Boolean} True if the player's new position stays within the field
+ * boundary. False, otherwise.
+ */
 Player.prototype.canMoveOnY = function(step) {
     return this.top + step >= 0 &&
         this.bottom + step <= canvasSize.effectiveHeight;
 };
 
-// Set Delta(next step) of x and y if the player is allowed
-// to move to the position.
+
+/**
+ * Sets delta(next step) values of x and y if the player's new location is
+ * valid.
+ * @param {Number} dt_x - A delta value on x-axis.
+ * @param {Number} dt_y - A delta value on y-axis.
+ * @return {undifined}
+ */
 Player.prototype.setDeltaOrIgnore = function(dt_x, dt_y) {
     var new_dt_x,
         new_dt_y;
@@ -214,6 +315,18 @@ Player.prototype.setDeltaOrIgnore = function(dt_x, dt_y) {
     this.setDelta(new_dt_x, new_dt_y);
 };
 
+/**
+ * Handles the inputs from the keyboard.
+ * When pressed a key of:
+ *  - 'left': the player moves one step to the west (if possible)
+ *  - 'right': the player moves one step to the east (if possible)
+ *  - 'up': the player moves one step to the north (if possible)
+ *  - 'down': the player moves one step to the south (if possible)
+ * When pressed anything else:
+ *  - Just ignore
+ * @param  {String} key - The string value of the input from keyboard
+ * @return {undefined}
+ */
 Player.prototype.handleInput = function(key) {
     var step_x,
         step_y;
@@ -242,20 +355,33 @@ Player.prototype.handleInput = function(key) {
     this.setDeltaOrIgnore(step_x, step_y);
 };
 
-// Returns a random integer between min (included) and max (included)
-// Using Math.round() will give you a non-uniform distribution!
-// This function was borrowed from the following document.
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+/**
+ * Returns a random integer between min (included) and max (included)
+ * Using Math.round() will give you a non-uniform distribution!
+ *
+ * This function was borrowed from the following document.
+ * I needed to have a function to randomly generates an int number and the
+ * sample function in MDN worked well.
+ *
+ * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects
+ * /Math/random
+ * @param  {Number} min - Minimum possible value
+ * @param  {Number} max - Maximum possible value
+ * @return {Number} A random int number ranging from 'min' to 'max' inclusive.
+ */
 var getRandomIntInclusive = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-// Generates the random position for the enemy.
-// This "random" means that choosing the position randomly from
-// the specific rows since the enemy's y coordinate should be somewhere
-// on the rows of the field.
-// I don't want to change the row number, so that it makes the enemues stay
-//  on the same row.
+/**
+ * Generates the random position for the enemy, global function.
+ * This "random" means that choosing the position randomly from
+ * the specific rows since the enemy's y coordinate should be somewhere
+ * on the rows of the field.
+ * I don't change the row number, so that it makes the enemues stay
+ * on the same row.
+ * @return {Object} The new, generated position (with properties of 'x' and 'y')
+ */
 var generateRandomEnemyPosition = function() {
     // Set row number ranging from 1 to 3 because I want the enemies appear
     // only on the stone fields. (row 1 to 3).
@@ -265,7 +391,12 @@ var generateRandomEnemyPosition = function() {
     };
 };
 
-// Generates the possible enemies speed.
+/**
+ * Generates the possible enemies speed, global function.
+ * The range of the new generated values is from MIN_POSSIBLE_ENEMY_SPEED and
+ * MAX_POSSIBLE_ENEMY_SPEED inclusive.
+ * @return {Number} - The new speed for an enemy.
+ */
 var generateRandomEnemySpeed = function() {
     return getRandomIntInclusive(
         MIN_POSSIBLE_ENEMY_SPEED, MAX_POSSIBLE_ENEMY_SPEED);
@@ -309,7 +440,11 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-// Reset the game by resetting the positions of the player and the enemies.
+/**
+ * Reset the game by resetting the positions of the player and the enemies,
+ * global function.
+ * @return {undefined}
+ */
 var resetGame = function() {
     allEnemies.forEach(function(enemy){
         enemy.setPosition(
