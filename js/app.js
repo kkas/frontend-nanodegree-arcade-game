@@ -459,7 +459,7 @@ var NUM_ENEMIES = 5,
     // The invisible top padding of the sprite. Adjusting this value does not
     // affect the position of the sprite. This is used only for drawing the
     // image.
-    SPRITE_TOP_PADDING = 20,
+    SPRITE_TOP_PADDING = 30,
     // Minimum possible speed of the enemy. Since the speed are selected
     // randomly, this value is used for the slowest value in the range.
     MIN_POSSIBLE_ENEMY_SPEED = 50,
