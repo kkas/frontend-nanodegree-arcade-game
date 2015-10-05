@@ -276,6 +276,8 @@ var NUM_ENEMIES = 5,
     SPRITE_WIDTH = 101,
     SPRITE_HEIGHT = 83,
     SPRITE_TOP_MARGIN = 20,
+    MIN_ENEMY_SPEED = 50,
+    MAX_ENEMY_SPEED = 200,
     allEnemies = [],
     player = new Player(),
     cnt,
@@ -287,7 +289,7 @@ for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
     allEnemies.push(
         new Enemy(
             generateRandomEnemyPosition(),
-            getRandomIntInclusive(50, 200)
+            getRandomIntInclusive(MIN_ENEMY_SPEED, MAX_ENEMY_SPEED)
         )
     );
 }
