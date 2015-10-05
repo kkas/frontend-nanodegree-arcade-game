@@ -207,11 +207,11 @@ Player.prototype.setDeltaOrIgnore = function(dt_x, dt_y) {
     var new_dt_x,
         new_dt_y;
 
-    if (dt_x != undefined && this.canMoveOnX(dt_x)) {
+    if (dt_x !== undefined && this.canMoveOnX(dt_x)) {
         new_dt_x = dt_x;
     }
 
-    if (dt_y != undefined && this.canMoveOnY(dt_y)) {
+    if (dt_y !== undefined && this.canMoveOnY(dt_y)) {
         new_dt_y = dt_y;
     }
 
