@@ -1,8 +1,5 @@
-// Enemies our player must avoid
-var Enemy = function(position, speed) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
+// Superclass
+var Charactor = function() {
     // Position of the enemy on the x-axis.
     this.x = 0;
 
@@ -16,22 +13,18 @@ var Enemy = function(position, speed) {
     this.left = 0;
     this.right = 0;
 
-    // How much pixel the enemy moves per frame.
-    this.enemyMovePerFrame = 0;
-
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
-
-    // Set the initial position of the enemy.
-    this.setPosition(position);
-
-    // Set the initial speed of the enemy.
-    this.setSpeed(speed);
+    // You need to call setSprite() to set the image.
+    this.sprite = '';
+};
+// Set the sprite image.
+Charactor.prototype.setSprite = function(sprite) {
+    this.sprite = sprite;
 };
 
-// Set the enemy's postion.
-Enemy.prototype.setPosition = function(position) {
+// Set the position of the charactor.
+Charactor.prototype.setPosition = function(position) {
     this.x = position.x;
     this.y = position.y;
 
@@ -42,6 +35,35 @@ Enemy.prototype.setPosition = function(position) {
     this.left = this.x;
     this.right = this.x + SPRITE_WIDTH;
 };
+
+// Render the charactor on the screen, required method for game
+Charactor.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
+};
+
+// Enemies our player must avoid
+// Subclass of 'Charactor'
+var Enemy = function(position, speed) {
+    // Variables applied to each of our instances go here,
+    // we've provided one for you to get started
+
+    // Initialize the enemy using Superclass's constructor
+    Charactor.call(this);
+
+    // How much pixel the enemy moves per frame.
+    this.enemyMovePerFrame = 0;
+
+    // Set the enemy's sprite.
+    this.setSprite('images/enemy-bug.png');
+
+    // Set the initial position of the enemy.
+    this.setPosition(position);
+
+    // Set the initial speed of the enemy.
+    this.setSpeed(speed);
+};
+Enemy.prototype = Object.create(Charactor.prototype);
+Enemy.prototype.constructor = Enemy;
 
 // Set the speed of the enemy.
 Enemy.prototype.setSpeed = function(speed) {
@@ -73,11 +95,6 @@ Enemy.prototype.update = function(dt) {
     }
 };
 
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
-};
-
 Enemy.prototype.isColliding = function(player) {
     return (
         this.top < player.bottom &&
@@ -90,8 +107,11 @@ Enemy.prototype.isColliding = function(player) {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-
+// Subclass of 'Charactor'
 var Player = function() {
+    // Initialize the enemy using Superclass's constructor
+    Charactor.call(this);
+
     // Value of one step on the x-axis
     this.INCREMENT_VALUE_OF_X = 101;
 
@@ -99,20 +119,7 @@ var Player = function() {
     this.INCREMENT_VALUE_OF_Y = 83;
 
     // Default sprite image of the player.
-    this.sprite = 'images/char-boy.png';
-
-    // Position of the player on the x-axis.
-    this.x = 0;
-
-    // Position of the player on the y-axis.
-    this.y = 0;
-
-    // Coordinates of the enemy object on the canvas.
-    // Used for collision detection.
-    this.top = 0;
-    this.bottom = 0;
-    this.left = 0;
-    this.right = 0;
+    this.setSprite('images/char-boy.png');
 
     // Player's initial position.
     // The numbers 2 and 5 indicate colum num and row num respectively.
@@ -130,6 +137,8 @@ var Player = function() {
     // Initialize the instance.
     this.init();
 };
+Player.prototype = Object.create(Charactor.prototype);
+Player.prototype.constructor = Player;
 
 // Whatever the initialization functions are defined here.
 Player.prototype.init = function() {
@@ -148,20 +157,6 @@ Player.prototype.resetPosition = function() {
             "y": this.INITIAL_POSITION_Y
         }
     );
-};
-
-// Set the poistion of the player.
-// TODO: Refactor with enemy's one.
-Player.prototype.setPosition = function(position) {
-    this.x = position.x;
-    this.y = position.y;
-
-    // Calcurate and updates the top, bottom, right, and
-    // left coordinates based on the assigned x and y values.
-    this.top = this.y;
-    this.bottom = this.y + SPRITE_HEIGHT;
-    this.left = this.x;
-    this.right = this.x + SPRITE_WIDTH;
 };
 
 // Update the player's position, required method for game
@@ -183,12 +178,6 @@ Player.prototype.update = function() {
 Player.prototype.setDelta = function(xDelta, yDelta) {
     this.xDelta = xDelta;
     this.yDelta = yDelta;
-};
-
-// TODO: Refactor with the enemy's one.
-// Render the player on the screen, required method for game
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
 };
 
 //TODO: Refactor with the enemy's one.
