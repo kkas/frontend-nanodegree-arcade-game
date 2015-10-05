@@ -56,7 +56,8 @@ Charactor.prototype.setPosition = function(position) {
  * @return {undefined}
  */
 Charactor.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_MARGIN);
+    ctx.drawImage(
+        Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_PADDING);
 };
 
 /**
@@ -446,15 +447,33 @@ var resetGame = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+
+// Number of enemies
 var NUM_ENEMIES = 5,
+    // Width in pixels of the sprite image. Currently, all of the sprites
+    // have the same width.
     SPRITE_WIDTH = 101,
+    // Height in pixels of the sprite image. Currently, all of the sprites
+    // have the same height.
     SPRITE_HEIGHT = 83,
-    SPRITE_TOP_MARGIN = 20,
+    // The invisible top padding of the sprite. Adjusting this value does not
+    // affect the position of the sprite. This is used only for drawing the
+    // image.
+    SPRITE_TOP_PADDING = 20,
+    // Minimum possible speed of the enemy. Since the speed are selected
+    // randomly, this value is used for the slowest value in the range.
     MIN_POSSIBLE_ENEMY_SPEED = 50,
+    // Maximum possible speed of the enemy. Since the speed are selected
+    // randomly, this value is used for the fastest value in the range.
     MAX_POSSIBLE_ENEMY_SPEED = 200,
+    // Array that stores the Enemy objects.
     allEnemies = [],
+    // Player object
     player = new Player(),
+    // counter used in iteration.
     cnt,
+    // Default position of the enemy on x-axis. Since the enemy comes in from
+    // the left side of the game board, the value is a negative value.
     ENEMY_INITIAL_X = -200;
 
 // Instantiates all of the enemies.
