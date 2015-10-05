@@ -139,16 +139,18 @@ Player.prototype.resetPosition = function() {
     // The numbers 2 and 5 indicate colum num and row num respectively.
     // The number starts from 0, so 2 will be the 3rd column, for example.
     this.setPosition(
-        this.INCREMENT_VALUE_OF_X * 2,
-        this.INCREMENT_VALUE_OF_Y * 5
+        {
+            "x": this.INCREMENT_VALUE_OF_X * 2,
+            "y": this.INCREMENT_VALUE_OF_Y * 5
+        }
     );
 };
 
 // Set the poistion of the player.
 // TODO: Refactor with enemy's one.
-Player.prototype.setPosition = function(x, y) {
-    this.x = x;
-    this.y = y;
+Player.prototype.setPosition = function(position) {
+    this.x = position.x;
+    this.y = position.y;
 
     // Calcurate and updates the top, bottom, right, and
     // left coordinates based on the assigned x and y values.
@@ -160,7 +162,12 @@ Player.prototype.setPosition = function(x, y) {
 
 // Update the player's position, required method for game
 Player.prototype.update = function() {
-    this.setPosition(this.x + this.xDelta, this.y + this.yDelta);
+    this.setPosition(
+        {
+            "x": this.x + this.xDelta,
+            "y": this.y + this.yDelta
+        }
+    );
 
     // Reset the delta counter.
     this.setDelta(0, 0);
