@@ -79,7 +79,6 @@ Enemy.prototype.update = function(dt) {
 
     // Check to see if the enemy reaches out of the canvas or not.
     if (this.left > canvasSize.effectiveWidth) {
-        console.log("Enemy is out of frame. Reset the position.");
         this.isOutOfFrame = true;
     }
 };
@@ -193,7 +192,6 @@ Player.prototype.render = function() {
 
 //TODO: Refactor with the enemy's one.
 Player.prototype.canMoveOnX = function(step) {
-    console.log("this.x + step: " + (this.x + step));
     return (
         ((this.left + step) >= 0) &&
         ((this.right + step) <= canvasSize.effectiveWidth)
@@ -202,7 +200,6 @@ Player.prototype.canMoveOnX = function(step) {
 
 //
 Player.prototype.canMoveOnY = function(step) {
-    console.log("this.y + step: " + (this.y + step));
     return (
         (this.top + step) >= 0) &&
         ((this.bottom + step) <= canvasSize.effectiveHeight
@@ -242,7 +239,6 @@ Player.prototype.handleInput = function(key) {
             break;
 
         default:
-            console.log('key is not supported: ' + key);
             break;
     }
 };
