@@ -19,9 +19,6 @@ var Enemy = function(position, speed) {
     // How much pixel the enemy moves per frame.
     this.enemyMovePerFrame = 0;
 
-    // True when the object is out of the canvas.
-    this.isOutOfFrame = false;
-
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -68,18 +65,11 @@ Enemy.prototype.update = function(dt) {
         resetGame();
     }
 
-    if (this.isOutOfFrame) {
+    // Check to see if the enemy reaches out of the canvas or not.
+    if (this.left > canvasSize.effectiveWidth) {
         // Reset the position of the enemy by assigning random
         // position.
         this.setPosition(generateRandomEnemyPosition());
-
-        // Reset the flag for the next.
-        this.isOutOfFrame = false;
-    }
-
-    // Check to see if the enemy reaches out of the canvas or not.
-    if (this.left > canvasSize.effectiveWidth) {
-        this.isOutOfFrame = true;
     }
 };
 
