@@ -220,7 +220,9 @@ Player.prototype.resetPosition = function() {
 };
 
 /**
- * Updates the player's position, required method for game
+ * Updates the player's position, required method for game.
+ * It also resets the delta values.
+ * When the player reaches to the water, the game will be reset.
  * @return {undefined}
  */
 Player.prototype.update = function() {
@@ -233,6 +235,31 @@ Player.prototype.update = function() {
 
     // Reset the delta counter.
     this.resetDelta();
+
+    // Check to see if the player reaches the water.
+    // If so, reset the game by moving the player to the initial location.
+    if (this.hasReachedGoal()) {
+        console.log("The player has reached the water! Reset the game.");
+        // I didn't call resetGame() here because I wanted only the player
+        // to go back to the initial location.
+        this.resetPosition();
+    }
+};
+
+/**
+ * Checks if the player reaches the goal (the water areas).
+ * The logic here is the same as detecting collision.
+ * If the player collides into the water area, that means the player reaches
+ * the goal.
+ * @return {Boolean} True when the player reached the goal. Otherwise, false.
+ */
+Player.prototype.hasReachedGoal = function() {
+    return (
+        this.top < waterArea.bottom &&
+        this.left < waterArea.right &&
+        this.bottom > waterArea.top &&
+        this.right > waterArea.left
+    );
 };
 
 /**

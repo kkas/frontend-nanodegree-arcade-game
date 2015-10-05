@@ -193,4 +193,15 @@ var Engine = (function(global) {
         'effectiveWidth': IMAGE_WIDTH * numCols,
         'effectiveHeight': IMAGE_HEIGHT * numRows
     };
+
+    /* This property indicates the water area to check if the player reaches
+     * this area (goal).
+     * By setting this property to global, the developer can refer to this.
+     */
+    global.waterArea = {
+        'top': 0,
+        'bottom': IMAGE_HEIGHT,
+        'left': 0,
+        'right': global.canvasSize.effectiveWidth
+    };
 })(this);
