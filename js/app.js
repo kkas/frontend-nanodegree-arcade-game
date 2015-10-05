@@ -1,4 +1,5 @@
-(function() {
+(function(global) {
+    // Run the entire code of this file in 'strict' mode
     'use strict';
 
     /**
@@ -502,4 +503,12 @@
 
         player.handleInput(allowedKeys[e.keyCode]);
     });
-})();
+
+    // Store these properties to the global object.
+    // Since engine.js refers to these objects.
+    // I put the entire code in this file into an anonymous function
+    // with the global object as the parameter, so that I need to think only
+    // about this js file to run in the 'strict mode'.
+    global.allEnemies = allEnemies;
+    global.player = player;
+})(this);
