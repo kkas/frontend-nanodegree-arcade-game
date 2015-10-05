@@ -187,18 +187,14 @@ Player.prototype.resetDelta = function() {
 
 //TODO: Refactor with the enemy's one.
 Player.prototype.canMoveOnX = function(step) {
-    return (
-        ((this.left + step) >= 0) &&
-        ((this.right + step) <= canvasSize.effectiveWidth)
-    );
+    return this.left + step >= 0 &&
+        this.right + step <= canvasSize.effectiveWidth;
 };
 
 //
 Player.prototype.canMoveOnY = function(step) {
-    return (
-        (this.top + step) >= 0) &&
-        ((this.bottom + step) <= canvasSize.effectiveHeight
-    );
+    return this.top + step >= 0 &&
+        this.bottom + step <= canvasSize.effectiveHeight;
 };
 
 // Set Delta(next step) of x and y if the player is allowed
