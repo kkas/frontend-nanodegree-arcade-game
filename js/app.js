@@ -402,6 +402,21 @@ var generateRandomEnemySpeed = function() {
         MIN_POSSIBLE_ENEMY_SPEED, MAX_POSSIBLE_ENEMY_SPEED);
 };
 
+/**
+ * Reset the game by resetting the positions of the player and the enemies,
+ * global function.
+ * @return {undefined}
+ */
+var resetGame = function() {
+    allEnemies.forEach(function(enemy){
+        enemy.setPosition(
+            generateRandomEnemyPosition()
+        );
+    });
+
+    player.resetPosition();
+};
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
@@ -439,18 +454,3 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
-/**
- * Reset the game by resetting the positions of the player and the enemies,
- * global function.
- * @return {undefined}
- */
-var resetGame = function() {
-    allEnemies.forEach(function(enemy){
-        enemy.setPosition(
-            generateRandomEnemyPosition()
-        );
-    });
-
-    player.resetPosition();
-};
