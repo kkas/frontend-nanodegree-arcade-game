@@ -197,9 +197,13 @@ Player.prototype.canMoveOnX = function(step) {
     return this.x + step >= 0 && this.x + step <= canvasSize.width - SPRITE_WIDTH;
 };
 
+//
 Player.prototype.canMoveOnY = function(step) {
     console.log("this.y + step: " + (this.y + step));
-    return this.y + step >= -30 && this.y + step < canvasSize.height - SPRITE_HEIGHT;
+    return (
+        (this.top + step) >= 0) &&
+        ((this.bottom + step) <= canvasSize.effectiveHeight
+    );
 };
 
 Player.prototype.handleInput = function(key) {

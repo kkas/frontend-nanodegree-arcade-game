@@ -23,7 +23,11 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime,
+        numRows = 6,
+        numCols = 5,
+        IMAGE_WIDTH = 101,
+        IMAGE_HEIGHT = 83;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -115,8 +119,6 @@ var Engine = (function(global) {
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
-            numRows = 6,
-            numCols = 5,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -132,7 +134,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * IMAGE_WIDTH, row * IMAGE_HEIGHT);
             }
         }
 
@@ -188,6 +190,8 @@ var Engine = (function(global) {
      */
     global.canvasSize = {
         'width': canvas.width,
-        'height': canvas.height
+        'height': canvas.height,
+        'effectiveWidth': IMAGE_WIDTH * numCols,
+        'effectiveHeight': IMAGE_HEIGHT * numRows
     };
 })(this);
