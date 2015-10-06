@@ -473,6 +473,28 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
+
+    /**
+     * Generates new enemies. The 'num' number of enemies will be created.
+     * @param  {Array} arrayOfEnemies - Array that will store the newly created
+     * enemy objects.
+     * @param  {Number} num - The number of enemies you want to generate.
+     * @return {undefined}
+     */
+    var generateEnemies = function(arrayOfEnemies, num) {
+        var cnt;
+
+        for (cnt = 0; cnt < num; cnt++) {
+            // Set the enemy on the first row.
+            arrayOfEnemies.push(
+                new Enemy(
+                    generateRandomEnemyPosition(),
+                    generateRandomEnemySpeed()
+                )
+            );
+        }
+    };
+
     /**
      * Generates the random position for the enemy, global function.
      * This 'random' means that choosing the position randomly from
@@ -641,8 +663,6 @@
         allEnemies = [],
         // Player object
         player = new Player(),
-        // counter used in iteration.
-        cnt,
         // Default position of the enemy on x-axis. Since the enemy comes in
         // from the left side of the game board, the value is a negative value.
         ENEMY_INITIAL_X = -200,
@@ -652,16 +672,7 @@
         allHearts = [];
 
     // Instantiates all of the enemies.
-    //TODO: refactor. put these in a function.
-    for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
-        // Set the enemy on the first row.
-        allEnemies.push(
-            new Enemy(
-                generateRandomEnemyPosition(),
-                generateRandomEnemySpeed()
-            )
-        );
-    }
+    generateEnemies(allEnemies, NUM_ENEMIES);
 
     // Instantiates all the hearts.
     generateNewHearts(allHearts, NUM_HEARTS);
