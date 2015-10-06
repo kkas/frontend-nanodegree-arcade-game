@@ -99,6 +99,13 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+
+        // Hearts' update() need to be called after the player's update(),
+        // so that the new position of the player is used to check if the
+        // heart is collected.
+        allHearts.forEach(function(heart) {
+            heart.update();
+        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -151,6 +158,14 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+
+        // Need to be called before other objects' ones, so that the hearts
+        // get drawn before other objects. As a result, the enemies seem to
+        // run on top of the heart objects.
+        allHearts.forEach(function(heart) {
+            heart.render();
+        });
+
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
@@ -175,7 +190,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/Heart.png'
     ]);
     Resources.onReady(init);
 

@@ -65,6 +65,37 @@
     };
 
     /**
+     * Checks if the 'this'(Charactor object) is colliding into the
+     * objInQuestion. This function is used in the subclass of Charactor class.
+     * For example, it checks if the enemy is colliding into the player.
+     *
+     * I was looking for a way to detect collisions, and found this post below.
+     * https://discussions.udacity.com/t/player-bug-collision-problem/15068/4?u=
+     * u=kkas
+     *
+     * I watched the following video and came up with the code in this function.
+     * HTML5 Game Development - Physics - AABB Collision
+     * https://www.udacity.com/course/viewer#!/c-cs255/l-52265917/e-130215280/m-
+     * 129941633
+     * @param  {Object} objInQuestion - The object being checked for collision.
+     * Currently, this object is assumed that it has 'bottom', 'right', 'top',
+     * 'left' properties that represent the x and y coordinates of the imaginary
+     * box for the object.
+     * @return {Boolean} True if the 'this' (charactor object) is colliding into
+     * 'objInQuestion'.
+     */
+    Charactor.prototype.isColliding = function(objInQuestion) {
+        //TODO: check the type of 'objInQuestion' to ensure it has the bottom,
+        //right, top, and left properties.
+        return (
+            this.top < player.bottom &&
+            this.left < player.right &&
+            this.bottom > player.top &&
+            this.right > player.left
+        );
+    };
+
+    /**
      * Enemies our player must avoid.
      * This class is a subclass of Charactor
      * @constructor
@@ -131,26 +162,6 @@
             // position.
             this.setPosition(generateRandomEnemyPosition());
         }
-    };
-
-    /**
-     * Checks if the enemy is colliding into the player
-     * I was looking for a way to detect collisions, and found this post below.
-     * https://discussions.udacity.com/t/player-bug-collision-problem/15068/4?u=kkas
-     *
-     * I watched the following video and came up with the code in this function.
-     * HTML5 Game Development - Physics - AABB Collision
-     * https://www.udacity.com/course/viewer#!/c-cs255/l-52265917/e-130215280/m-129941633
-     * @param  {Player}  player - The player object to check for collision.
-     * @return {Boolean} True if the enemy is collided.
-     */
-    Enemy.prototype.isColliding = function(player) {
-        return (
-            this.top < player.bottom &&
-            this.left < player.right &&
-            this.bottom > player.top &&
-            this.right > player.left
-        );
     };
 
     // Now write your own player class
@@ -258,6 +269,7 @@
      * the goal.
      * @return {Boolean} True when the player reached the goal. Otherwise, false.
      */
+    //TODO: refactor with Charactor.isColliding().
     Player.prototype.hasReachedGoal = function() {
         return (
             this.top < waterArea.bottom &&
@@ -387,6 +399,59 @@
     };
 
     /**
+     * Heart that the player collects.
+     * This class is a subclass of Charactor
+     * @constructor
+     * @param {Object} position - Position object that has x and y coordinates.
+     * This will be used for the position of the newly generated heart object
+     * @return {undefined}
+     */
+    var Heart = function(position) {
+        // Initialize the enemy using Superclass's constructor
+        Charactor.call(this);
+
+        // Flag that indicates if it is collected by the user.
+        // The default value is false (has not collected yet).
+        this.collected = false;
+
+        // Default sprite image of the player.
+        this.setSprite('images/Heart.png');
+
+        // Set the initial position of the heart.
+        this.setPosition(position);
+    };
+    Heart.prototype = Object.create(Charactor.prototype);
+    Heart.prototype.constructor = Heart;
+
+    /**
+     * Updates the heart objects' properties.
+     * Currently, this function updates this.collected with the result
+     * from the collision checking with the player.
+     * @return {[type]} [description]
+     */
+    Heart.prototype.update = function() {
+        if (this.isColliding(player)) {
+            this.collected = true;
+        }
+    };
+
+    /**
+     * Renders the Heart object on the screen as long as the 'collected' is
+     * false
+     * @override
+     * @return {undefined}
+     */
+    Heart.prototype.render = function() {
+        if (!this.collected) {
+            ctx.drawImage(
+                Resources.get(this.sprite),
+                this.x,
+                this.y - SPRITE_TOP_PADDING
+            );
+        }
+    };
+
+    /**
      * Returns a random integer between min (included) and max (included)
      * Using Math.round() will give you a non-uniform distribution!
      *
@@ -434,11 +499,91 @@
     };
 
     /**
+     * Generates the item's postion randomly.
+     * @return {Ojbect} - Object that has x and y properties for its position.
+     */
+    var generateRandomItemPosition = function() {
+        // Set a row number ranging from 1 to 3 because I want the items to
+        // appear only on the stone fields. (row 1 to 3).
+        // The same thought is applied to the column, 'x', I want the item to
+        // appear on somewhere between row 0 to 4.
+        return {
+            'x': SPRITE_WIDTH * getRandomIntInclusive(0, 4),
+            'y': SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
+        };
+    };
+
+    /**
+     * Set the hearts on the board at the random positon.
+     * Each heart will have the different position.
+     * @param {Array} arrayOfHearts - An array that will store the new hearts.
+     * @param  {Number} num - How many hearts you want to generate.
+     * @return {undefined}
+     */
+    var generateNewHearts = function(arrayOfHearts, num) {
+        var cnt,
+            newHeartPosition,
+            needToRegenerateHeart;
+
+        // For hearts, I don't want more than one hearts to be shown at the
+        // same position. Therefore, I checked the newly generated position
+        // with the ones that have already generated. If it has the same
+        // position, the position will be re-generate until it has the
+        // different position.
+        for (cnt = 0; cnt < num; cnt++) {
+            do {
+                newHeartPosition = generateRandomItemPosition();
+
+                if (checkIfExists(allHearts, newHeartPosition)) {
+                    // console.log("need to regenerate heart.");
+                    needToRegenerateHeart = true;
+                } else {
+                    needToRegenerateHeart = false;
+                }
+
+            // Repeat this loop until needToRegenerateHeart becomes false
+            } while (needToRegenerateHeart);
+
+            // console.log("newHeartPosition: " + newHeartPosition.x + ", " + newHeartPosition.y);
+            arrayOfHearts.push(new Heart(newHeartPosition));
+        }
+    };
+
+    /**
+     * Checks if the items in itemArray has the same posiotion(x and y)
+     * with the itemInQuestion.
+     * Each object stored in itemArray is assumed that it has already existed
+     * (created) and have x and y properties for its position.
+     * @param  {Array} itemArray - Array that stores the existing items.
+     * @param  {Object} itemInQuestion - Item being checked
+     * @return {Boolean} True if the posion of the itemInQuestion matches the
+     * position of any items stored in itemArray. False, otherwise.
+     */
+    var checkIfExists = function(itemArray, itemInQuestion) {
+        var cnt,
+            itemExists;
+
+        // If any item is found on the same position,
+        // stop checking and return true.
+        for (cnt = 0; cnt < itemArray.length; cnt++) {
+            itemExists = itemArray[cnt];
+
+            if (itemInQuestion.x === itemExists.x &&
+                itemInQuestion.y === itemExists.y) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    /**
      * Reset the game by resetting the positions of the player and the enemies,
      * global function.
      * @return {undefined}
      */
     var resetGame = function() {
+        console.log("Resetting the game...");
         allEnemies.forEach(function(enemy){
             enemy.setPosition(
                 generateRandomEnemyPosition()
@@ -446,6 +591,22 @@
         });
 
         player.resetPosition();
+
+        // Resets all the hearts by inserting 0 to the length of the array and
+        // then, create new one.
+        //
+        // At first try, I just replaced the reference of the allHearts to the
+        // newly created array returned from generateNewHearts(). However,
+        // this did not work since I have assigned the reference to the
+        // original array to the 'global' object.
+        //
+        // I searched for a way to delete all the elements in an array and
+        // found the solusion at stackoverflow by assinging 0 to the length of
+        // the array (the 2nd method).
+        // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
+        // javascript
+        allHearts.length = 0;
+        generateNewHearts(allHearts, NUM_HEARTS);
     };
 
     // Now instantiate your objects.
@@ -478,9 +639,14 @@
         cnt,
         // Default position of the enemy on x-axis. Since the enemy comes in from
         // the left side of the game board, the value is a negative value.
-        ENEMY_INITIAL_X = -200;
+        ENEMY_INITIAL_X = -200,
+        // Number of Hearts
+        NUM_HEARTS = 2,
+        // Array that stores the Heart objects.
+        allHearts = [];
 
     // Instantiates all of the enemies.
+    //TODO: refactor. put these in a function.
     for (cnt = 0; cnt < NUM_ENEMIES; cnt++) {
         // Set the enemy on the first row.
         allEnemies.push(
@@ -490,6 +656,9 @@
             )
         );
     }
+
+    // Instantiates all the hearts.
+    generateNewHearts(allHearts, NUM_HEARTS);
 
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
@@ -511,4 +680,5 @@
     // about this js file to run in the 'strict mode'.
     global.allEnemies = allEnemies;
     global.player = player;
+    global.allHearts = allHearts;
 })(this);
