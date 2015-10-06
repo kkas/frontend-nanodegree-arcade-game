@@ -56,7 +56,8 @@
     };
 
     /**
-     * Renders the charactor on the screen, required method for game, shared method.
+     * Renders the charactor on the screen, required method for game, shared
+     * method.
      * @return {undefined}
      */
     Charactor.prototype.render = function() {
@@ -198,8 +199,8 @@
         // example, when a key is pressed by the user,
         // the incremental/decremental value will be stored.
         // The reason for having these properties are to wait
-        // for update() being called, in which these values are added to/subtracted
-        // from the position of the player.
+        // for update() being called, in which these values are added to/subtrac
+        // ted from the position of the player.
         this.xDelta = 0;
         this.yDelta = 0;
 
@@ -267,7 +268,8 @@
      * The logic here is the same as detecting collision.
      * If the player collides into the water area, that means the player reaches
      * the goal.
-     * @return {Boolean} True when the player reached the goal. Otherwise, false.
+     * @return {Boolean} True when the player reached the goal.
+     * Otherwise, false.
      */
     //TODO: refactor with Charactor.isColliding().
     Player.prototype.hasReachedGoal = function() {
@@ -284,8 +286,10 @@
      * of the player will be changed acording to this value on the next update().
      * They will be reset after the update of the position.
      * Sets the default value of '0' if undefined is passed for the argment.
-     * @param {Number} xDelta - The new delta for x. Sets 0 if undefined is passed.
-     * @param {Number} yDelta - The new delta for y. Sets 0 if undefined is passed.
+     * @param {Number} xDelta - The new delta for x. Sets 0 if undefined is
+     * passed.
+     * @param {Number} yDelta - The new delta for y. Sets 0 if undefined is
+     * passed.
      * @return {undefined}
      */
     Player.prototype.setDelta = function(xDelta, yDelta) {
@@ -305,14 +309,14 @@
     /**
      * Checks if the player can move to the left/right (on x-axis).
      * This is similar to Player.canMoveOnY().
-     * It checks the new location by comparing the left and right boundaries of the
-     * field with the new locations, that are calculated by summing the 'step' and
-     * the current values of left and right.
-     * If the new value stays within the boundary, it returns true to indicate the
-     * player can move. Otherwise, returns false.
+     * It checks the new location by comparing the left and right boundaries of
+     * the field with the new locations, that are calculated by summing the
+     * 'step' and the current values of left and right.
+     * If the new value stays within the boundary, it returns true to indicate
+     * the player can move. Otherwise, returns false.
      * @param  {Number} step - The number of pixels the player moves
-     * @return {Boolean} True if the player's new position stays within the field
-     * boundary. False, otherwise.
+     * @return {Boolean} True if the player's new position stays within the
+     * field boundary. False, otherwise.
      */
     Player.prototype.canMoveOnX = function(step) {
         return this.left + step >= 0 &&
@@ -322,14 +326,14 @@
     /**
      * Checks if the player can move to the left/right (on y-axis).
      * This is similar to Player.canMoveOnX().
-     * It checks the new location by comparing the top and bottom boundaries of the
-     * field with the new locations, that are calculated by summing the 'step' and
-     * the current values of top and bottom.
-     * If the new value stays within the boundary, it returns true to indicate the
-     * player can move. Otherwise, returns false.
+     * It checks the new location by comparing the top and bottom boundaries of
+     * the field with the new locations, that are calculated by summing the
+     * 'step' and the current values of top and bottom.
+     * If the new value stays within the boundary, it returns true to indicate
+     * the player can move. Otherwise, returns false.
      * @param  {Number} step - The number of pixels the player moves
-     * @return {Boolean} True if the player's new position stays within the field
-     * boundary. False, otherwise.
+     * @return {Boolean} True if the player's new position stays within the
+     * field boundary. False, otherwise.
      */
     Player.prototype.canMoveOnY = function(step) {
         return this.top + step >= 0 &&
@@ -459,11 +463,12 @@
      * I needed to have a function to randomly generates an int number and the
      * sample function in MDN worked well.
      *
-     * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects
-     * /Math/random
+     * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Obj
+     * ects/Math/random
      * @param  {Number} min - Minimum possible value
      * @param  {Number} max - Maximum possible value
-     * @return {Number} A random int number ranging from 'min' to 'max' inclusive.
+     * @return {Number} A random int number ranging from 'min' to 'max'
+     * inclusive.
      */
     var getRandomIntInclusive = function(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -476,7 +481,8 @@
      * on the rows of the field.
      * I don't change the row number, so that it makes the enemues stay
      * on the same row.
-     * @return {Object} The new, generated position (with properties of 'x' and 'y')
+     * @return {Object} The new, generated position (with properties of 'x' and
+     * 'y')
      */
     var generateRandomEnemyPosition = function() {
         // Set row number ranging from 1 to 3 because I want the enemies appear
@@ -489,8 +495,8 @@
 
     /**
      * Generates the possible enemies speed, global function.
-     * The range of the new generated values is from MIN_POSSIBLE_ENEMY_SPEED and
-     * MAX_POSSIBLE_ENEMY_SPEED inclusive.
+     * The range of the new generated values is from MIN_POSSIBLE_ENEMY_SPEED
+     * and MAX_POSSIBLE_ENEMY_SPEED inclusive.
      * @return {Number} - The new speed for an enemy.
      */
     var generateRandomEnemySpeed = function() {
@@ -544,7 +550,8 @@
             // Repeat this loop until needToRegenerateHeart becomes false
             } while (needToRegenerateHeart);
 
-            // console.log("newHeartPosition: " + newHeartPosition.x + ", " + newHeartPosition.y);
+            // console.log("newHeartPosition: " + newHeartPosition.x + ", " +
+            // newHeartPosition.y);
             arrayOfHearts.push(new Heart(newHeartPosition));
         }
     };
@@ -621,9 +628,9 @@
         // Height in pixels of the sprite image. Currently, all of the sprites
         // have the same height.
         SPRITE_HEIGHT = 83,
-        // The invisible top padding of the sprite. Adjusting this value does not
-        // affect the position of the sprite. This is used only for drawing the
-        // image.
+        // The invisible top padding of the sprite. Adjusting this value does
+        // not affect the position of the sprite. This is used only for drawing
+        // the image.
         SPRITE_TOP_PADDING = 30,
         // Minimum possible speed of the enemy. Since the speed are selected
         // randomly, this value is used for the slowest value in the range.
@@ -637,8 +644,8 @@
         player = new Player(),
         // counter used in iteration.
         cnt,
-        // Default position of the enemy on x-axis. Since the enemy comes in from
-        // the left side of the game board, the value is a negative value.
+        // Default position of the enemy on x-axis. Since the enemy comes in
+        // from the left side of the game board, the value is a negative value.
         ENEMY_INITIAL_X = -200,
         // Number of Hearts
         NUM_HEARTS = 2,
