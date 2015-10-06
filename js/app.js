@@ -271,7 +271,6 @@
      * @return {Boolean} True when the player reached the goal.
      * Otherwise, false.
      */
-    //TODO: refactor with Charactor.isColliding().
     Player.prototype.hasReachedGoal = function() {
         return (
             this.top < waterArea.bottom &&
