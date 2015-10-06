@@ -114,6 +114,9 @@
         // How much pixel the enemy moves per frame.
         this.enemyMovePerFrame = 0;
 
+        // Score that the player will loose when hit
+        this.SCORE = -10;
+
         // Set the enemy's sprite.
         this.setSprite('images/enemy-bug.png');
 
@@ -139,6 +142,8 @@
 
     /**
      * Updates the enemy's position, required method for game
+     * If the enemy collides into the player, the player will
+     * loose some scores.
      * @param  {Number} dt - A time delta between ticks
      * @return {undefined}
      */
@@ -154,7 +159,10 @@
         // Check to see if the enemy is colliding with the player.
         if (this.isColliding(player)) {
             console.log('Collision detected!');
-            resetGame();
+            // Adding score here means loosing the score.
+            score.addScore(this.SCORE);
+            // Reset the stage
+            resetStage();
         }
 
         // Check to see if the enemy reaches out of the canvas or not.
@@ -486,12 +494,14 @@
 
     /**
      * Adds scoreEarned to the current score and make the result as
-     * the new current score.
-     * @param {Number} scoreEarned - Score to be added
+     * the new current score. When loosing points, the value passed as
+     * the argument is a minus value. So, adding a minus number equals to
+     * subtracting the number.
+     * @param {Number} score - Score to be added
      * @return {undefined}
      */
-    Score.prototype.addScore = function(scoreEarned) {
-        this.score += scoreEarned;
+    Score.prototype.addScore = function(score) {
+        this.score += score;
     };
 
     /**
@@ -661,12 +671,10 @@
     };
 
     /**
-     * Reset the game by resetting the positions of the player and the enemies,
-     * global function.
+     * Reset the stage by resetting the positions of the player and the enemies.
      * @return {undefined}
      */
-    var resetGame = function() {
-        console.log("Resetting the game...");
+    var resetStage = function() {
         resetEnemiesPositions();
 
         player.resetPosition();
