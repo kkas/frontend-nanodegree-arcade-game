@@ -256,10 +256,9 @@
         // Check to see if the player reaches the water.
         // If so, reset the game by moving the player to the initial location.
         if (this.hasReachedGoal()) {
-            console.log('The player has reached the water! Reset the game.');
-            // I didn't call resetGame() here because I wanted only the player
-            // to go back to the initial location.
-            this.resetPosition();
+            console.log('The player has reached the water!' +
+                'Go to the next stage.');
+            nextStage();
         }
     };
 
@@ -668,11 +667,7 @@
      */
     var resetGame = function() {
         console.log("Resetting the game...");
-        allEnemies.forEach(function(enemy){
-            enemy.setPosition(
-                generateRandomEnemyPosition()
-            );
-        });
+        resetEnemiesPositions();
 
         player.resetPosition();
 
@@ -689,6 +684,36 @@
         // the array (the 2nd method).
         // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
         // javascript
+        allHearts.length = 0;
+        generateNewHearts(allHearts, NUM_HEARTS);
+    };
+
+    /**
+     * Resets the positions of all of the enemies.
+     * @return {undefined}
+     */
+    var resetEnemiesPositions = function() {
+        allEnemies.forEach(function(enemy){
+            enemy.setPosition(
+                generateRandomEnemyPosition()
+            );
+        });
+    };
+
+    /**
+     * Called when you need to go to the next stage.
+     * Currently, it does:
+     * <ul>
+     * <li>Resetting the player's position</li>
+     * <li>Regenerating the hearts</li>
+     * </ul>
+     * @return {undefined}
+     */
+    var nextStage = function() {
+        // Reset the player's position
+        player.resetPosition();
+
+        // Reset the hearts
         allHearts.length = 0;
         generateNewHearts(allHearts, NUM_HEARTS);
     };
