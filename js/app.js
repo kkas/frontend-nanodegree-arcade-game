@@ -417,6 +417,9 @@
         // The default value is false (has not collected yet).
         this.collected = false;
 
+        // The score the player will earn when collected.
+        this.SCORE = 10;
+
         // Default sprite image of the player.
         this.setSprite('images/Heart.png');
 
@@ -433,8 +436,10 @@
      * @return {[type]} [description]
      */
     Heart.prototype.update = function() {
-        if (this.isColliding(player)) {
+        // If the heart has been collected, I don't need to check the collision.
+        if (!this.collected && this.isColliding(player)) {
             this.collected = true;
+            score.addScore(this.SCORE);
         }
     };
 
@@ -452,6 +457,57 @@
                 this.y - SPRITE_TOP_PADDING
             );
         }
+    };
+
+
+    /**
+     * Score class. Actually, I am not sure if the score should be a
+     * class since I need only one instance. However, I think making it
+     * as a class is convinient since it can hold many relating functions like
+     * the other pseudo classical classes do.
+     * @constructor
+     * @return {Score} Newly created Score object (with constructor mode)
+     */
+    var Score = function(defaultScore) {
+        // The score
+        this.score = 0;
+
+        // Set the default score
+        this.setScore(defaultScore);
+    };
+
+    /**
+     * Sets newScore as the current score.
+     * @param {[type]} newScore [description]
+     * @return {undefined}
+     */
+    Score.prototype.setScore = function(newScore) {
+        this.score = newScore || 0;
+    };
+
+    /**
+     * Adds scoreEarned to the current score and make the result as
+     * the new current score.
+     * @param {Number} scoreEarned - Score to be added
+     * @return {undefined}
+     */
+    Score.prototype.addScore = function(scoreEarned) {
+        this.score += scoreEarned;
+    };
+
+    /**
+     * Renders the score on the board. This function is called from
+     * engine.js.
+     * @return {[type]} [description]
+     */
+    Score.prototype.render = function() {
+        ctx.font = '36pt Impact';
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+        ctx.fillText('Score: ' + this.score, 10, 100);
+        ctx.strokeText('Score: ' + this.score, 10, 100);
+
     };
 
     /**
@@ -669,7 +725,9 @@
         // Number of Hearts
         NUM_HEARTS = 2,
         // Array that stores the Heart objects.
-        allHearts = [];
+        allHearts = [],
+        // Score object that holds the score of the entire game.
+        score = new Score();
 
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
@@ -698,4 +756,5 @@
     global.allEnemies = allEnemies;
     global.player = player;
     global.allHearts = allHearts;
+    global.score = score;
 })(this);
