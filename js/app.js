@@ -958,21 +958,19 @@
         // new ones.
         //
         // In order for this deletion, I reset all the hearts and gems by
-        // inserting 0 to the lengths of the arrays and then, create new ones.
-        //
-        // Replacing the pointers to the arrays(objects) will not work since
-        // they are assigned in the properties in the global object.
+        // inserting 0 to the length of the 'allItem' array. The reason for this
+        // is that replacing the pointer to the array does not work
+        // since it is assigned in the property of the global object.
         //
         // I searched for a way to delete all the elements in an array and
         // found the solusion at stackoverflow by assinging 0 to the length of
         // the array (the 2nd method).
         // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
         // javascript
-        allHearts.length = 0;
-        allGems.length = 0;
+        allItems.length = 0;
 
-        createItems(allHearts, occupiedPositions, NUM_HEARTS, Heart);
-        createItems(allGems, occupiedPositions, NUM_GEMS, Gem);
+        createItems(allItems, occupiedPositions, NUM_GEMS, Heart);
+        createItems(allItems, occupiedPositions, NUM_GEMS, Gem);
     };
 
     /**
@@ -1132,14 +1130,15 @@
         // Default position of the enemy on x-axis. Since the enemy comes in
         // from the left side of the game board, the value is a negative value.
         ENEMY_INITIAL_X = -200,
+        /**
+         * Array that holds all the items, such as Gems, Hearts, in the game
+         * @type {Array}
+         */
+        allItems = [],
         // Number of Hearts
         NUM_HEARTS = 2,
-        // Array that stores the Heart objects.
-        allHearts = [],
         // Number of Gems
         NUM_GEMS = 2,
-        // Array that stores the Gem objects.
-        allGems = [],
         // Score object that holds the score of the entire game.
         score = new Score(10),
         // Message object. Only one instance of this should be created.
@@ -1171,8 +1170,7 @@
     // about this js file to run in the 'strict mode'.
     global.allEnemies = allEnemies;
     global.player = player;
-    global.allHearts = allHearts;
-    global.allGems = allGems;
+    global.allItems = allItems;
     global.score = score;
     global.message = message;
 })(this);
