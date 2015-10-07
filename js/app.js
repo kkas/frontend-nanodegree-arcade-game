@@ -130,6 +130,16 @@
     Enemy.prototype.constructor = Enemy;
 
     /**
+     * Gets the speed of the enemy.
+     * This value equals to the number of pixels the enemy moves
+     * per frame.
+     * @return {Number} - The curent speed of the enemy.
+     */
+    Enemy.prototype.getSpeed = function() {
+        return this.enemyMovePerFrame;
+    };
+
+    /**
      * Sets the speed of the enemy.
      * This value equals to the number of pixels the enemy moves
      * per frame.
@@ -179,6 +189,16 @@
             // position.
             this.setPosition(generateRandomEnemyPosition());
         }
+    };
+
+    /**
+     * Increases the speed of the enemy. The value in 'speed' will be added
+     * to the current speed.
+     * @param  {Number} speed - Value of the speed to increase.
+     * @return {undefined}
+     */
+    Enemy.prototype.increaseSpeed = function(speed) {
+        this.setSpeed(this.getSpeed() + speed);
     };
 
     /**
@@ -1034,7 +1054,7 @@
 
         player.resetPosition();
 
-        generateItems();
+        // generateItems(); // bug.
     };
 
     /**
@@ -1050,16 +1070,31 @@
     };
 
     /**
+     * Increases the speeds of all the existing ememies.
+     * @param  {Number} speed - The value that will be added to the current
+     * enemies' speeds.
+     * @return {undefined}
+     */
+    var increaseEnemiesSpeeds = function(speed) {
+        allEnemies.forEach(function(enemy){
+            enemy.increaseSpeed(speed);
+        });
+    };
+
+    /**
      * Called when you need to go to the next stage.
      * Currently, it does:
      * <ul>
+     * <li>Increasing the speeds of the enemies</li>
      * <li>Resetting the player's position</li>
      * <li>Regenerating the hearts</li>
      * </ul>
      * @return {undefined}
      */
     var nextStage = function() {
-        // Reset the player's position
+
+        increaseEnemiesSpeeds(ADDITIONAL_ENEMY_SPEED);
+
         player.resetPosition();
 
         generateItems();
@@ -1085,8 +1120,11 @@
         // randomly, this value is used for the slowest value in the range.
         MIN_POSSIBLE_ENEMY_SPEED = 50,
         // Maximum possible speed of the enemy. Since the speed are selected
-        // randomly, this value is used for the fastest value in the range.
+        // randomly, this value is used for the fastest value in the range
+        // as the initial value.
         MAX_POSSIBLE_ENEMY_SPEED = 200,
+        // Speed that will be added to increase the speed of the enemies.
+        ADDITIONAL_ENEMY_SPEED = 50,
         // Array that stores the Enemy objects.
         allEnemies = [],
         // Player object
