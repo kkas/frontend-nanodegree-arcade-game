@@ -634,6 +634,13 @@
 
         // Set the default score
         this.setScore(defaultScore);
+
+        /**
+         * The highest score that the player has gotten in the game.
+         * @type {Number}
+         */
+        // Do this after score is set in order to set the initial score
+        this.highScore = this.getScore();
     };
 
     /**
@@ -663,6 +670,11 @@
      */
     Score.prototype.addScore = function(score) {
         this.score += score;
+
+        // Check to see if the score exceeds the current highest score.
+        if (this.highScore < this.score) {
+            this.highScore = this.score;
+        }
     };
 
     /**
@@ -678,8 +690,14 @@
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
+
+        // Draw the current score
         ctx.fillText('Score: ' + this.score, 10, 100);
         ctx.strokeText('Score: ' + this.score, 10, 100);
+
+        // Draw the highest score
+        ctx.fillText('Highest Score: ' + this.highScore, 10, 140);
+        ctx.strokeText('Highest Score: ' + this.highScore, 10, 140);
 
         // Restore the privious setting.
         ctx.restore();
