@@ -806,7 +806,6 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-
     /**
      * Generates new enemies. The 'num' number of enemies will be created.
      * @param  {Array} arrayOfEnemies - Array that will store the newly created
