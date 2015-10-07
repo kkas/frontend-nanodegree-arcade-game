@@ -528,6 +528,99 @@
     Heart.prototype.constructor = Heart;
 
     /**
+     * Gem that the player collects.
+     * This class is a subclass of Item
+     * @constructor
+     * @param {Object} position - Position object that has x and y coordinates.
+     * This will be used for the position of the newly generated object
+     * @return {undefined}
+     */
+    var Gem = function(position) {
+        // Initialize the object using Superclass's constructor
+        Item.call(this, position);
+
+        /**
+         * sprite image URI of a blue gem.
+         * @type {String}
+         */
+        this.SPRITE_BLUE = 'images/Gem Blue.png';
+
+        /**
+         * sprite image URI of a green gem.
+         * @type {String}
+         */
+        this.SPRITE_GREEN = 'images/Gem Green.png';
+
+        /**
+         * sprite image URI of a orange gem.
+         * @type {String}
+         */
+        this.SPRITE_ORANGE = 'images/Gem Orange.png';
+
+        /**
+         * Constant integer value that indicates Blue Gem.
+         * This is mostly used when choosing color of the gem randomly.
+         * Do not change the value. There is a dependency to the order.
+         * @type {Number}
+         */
+        this.BLUE = 0;
+
+        /**
+         * Constant integer value that indicates Green Gem.
+         * This is mostly used when choosing color of the gem randomly.
+         * Do not change the value. There is a dependency to the order.
+         * @type {Number}
+         */
+        this.GREEN = 1;
+
+        /**
+         * Constant integer value that indicates Orange Gem.
+         * This is mostly used when choosing color of the gem randomly.
+         * Do not change the value. There is a dependency to the order.
+         * @type {Number}
+         */
+        this.ORANGE = 2;
+
+        // Set the initial color randomly
+        this.changeColorRandomly();
+    };
+    Gem.prototype = Object.create(Item.prototype);
+    Gem.prototype.constructor = Gem;
+
+    /**
+     * Selects a color randomly and sets it for the gem.
+     * @return {undefined}
+     */
+    Gem.prototype.changeColorRandomly = function() {
+        // The values passed into getRandomIntInclusive() assues they are
+        // integer values and Blue is the smallest value and the largest for
+        // Orange.
+        this.setColor(getRandomIntInclusive(this.BLUE, this.ORANGE));
+    };
+
+    /**
+     * Sets the color of the gem.
+     * @param {Number} newColor - Integer that represents the color of a gem.
+     */
+    Gem.prototype.setColor = function(newColor) {
+        switch(newColor) {
+            case this.BLUE:
+                this.setSprite(this.SPRITE_BLUE);
+            break;
+            case this.GREEN:
+                this.setSprite(this.SPRITE_GREEN);
+            break;
+            case this.ORANGE:
+                this.setSprite(this.SPRITE_ORANGE);
+            break;
+            default:
+                console.log('Unexpected value for the color is selected.' +
+                    'There is something wrong in Gem.prototype.setColor.');
+                break;
+        }
+    };
+
+    /**
      * Score class. Actually, I am not sure if the score should be a
      * class since I need only one instance. However, I think making it
      * as a class is convinient since it can hold many relating functions like
@@ -818,6 +911,43 @@
     };
 
     /**
+     * Set the gems on the board at the random positon.
+     * Each gem will have the different position.
+     * @param {Array} arrayOfGems - An array that will store the new gems.
+     * @param  {Number} num - How many gems you want to generate.
+     * @return {undefined}
+     */
+    var generateNewGems = function(arrayOfGems, num) {
+        var cnt,
+            newGemPosition,
+            needToRegenerateGem;
+
+        // For gems, I don't want more than one gems to be shown at the
+        // same position. Therefore, I checked the newly generated position
+        // with the ones that have already generated. If it has the same
+        // position, the position will be re-generate until it has the
+        // different position.
+        for (cnt = 0; cnt < num; cnt++) {
+            do {
+                newGemPosition = generateRandomItemPosition();
+
+                if (checkIfExists(allGems, newGemPosition)) {
+                    // console.log("need to regenerate gem.");
+                    needToRegenerateGem = true;
+                } else {
+                    needToRegenerateGem = false;
+                }
+
+            // Repeat this loop until needToRegenerateGem becomes false
+            } while (needToRegenerateGem);
+
+            // console.log("newGemPosition: " + newGemPosition.x + ", " +
+            // newGemPosition.y);
+            arrayOfGems.push(new Gem(newGemPosition));
+        }
+    };
+
+    /**
      * Checks if the items in itemArray has the same posiotion(x and y)
      * with the itemInQuestion.
      * Each object stored in itemArray is assumed that it has already existed
@@ -934,6 +1064,10 @@
         NUM_HEARTS = 2,
         // Array that stores the Heart objects.
         allHearts = [],
+        // Number of Gems
+        NUM_GEMS = 2,
+        // Array that stores the Gem objects.
+        allGems = [],
         // Score object that holds the score of the entire game.
         score = new Score(10),
         // Message object. Only one instance of this should be created.
@@ -944,6 +1078,10 @@
 
     // Instantiates all the hearts.
     generateNewHearts(allHearts, NUM_HEARTS);
+
+    // Instantiates all the hearts.
+    // TODO: refactor this with hearts
+    generateNewGems(allGems, NUM_GEMS);
 
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
@@ -966,6 +1104,7 @@
     global.allEnemies = allEnemies;
     global.player = player;
     global.allHearts = allHearts;
+    global.allGems = allGems;
     global.score = score;
     global.message = message;
 })(this);

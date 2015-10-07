@@ -100,11 +100,17 @@ var Engine = (function(global) {
         });
         player.update();
 
-        // Hearts' update() need to be called after the player's update(),
-        // so that the new position of the player is used to check if the
-        // heart is collected.
+        /* update() of Hearts and Gems need to be called after the player's
+         * update(),
+         * so that the new position of the player is used to check if they are
+         * collected.
+         */
         allHearts.forEach(function(heart) {
             heart.update();
+        });
+
+        allGems.forEach(function(gem) {
+            gem.update();
         });
     }
 
@@ -159,11 +165,16 @@ var Engine = (function(global) {
          * the render function you have defined.
          */
 
-        // Need to be called before other objects' ones, so that the hearts
-        // get drawn before other objects. As a result, the enemies seem to
-        // run on top of the heart objects.
+        /* render() of Hearts and Gems are need to be called before other
+         * objects' ones, so that they will be drawn before other objects.
+         * As a result, the enemies seem to run on top of them.
+         */
         allHearts.forEach(function(heart) {
             heart.render();
+        });
+
+        allGems.forEach(function(gem) {
+            gem.render();
         });
 
         allEnemies.forEach(function(enemy) {
@@ -195,7 +206,10 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/Heart.png'
+        'images/Heart.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Gem Orange.png'
     ]);
     Resources.onReady(init);
 
