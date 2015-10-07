@@ -443,41 +443,50 @@
     };
 
     /**
-     * Heart that the player collects.
-     * This class is a subclass of Charactor
+     * Item class that is a super class of all the items in this gamee, such as
+     *  Heart, and Gems.
+     * This class is also a subclass of Charactor.
      * @constructor
-     * @param {Object} position - Position object that has x and y coordinates.
-     * This will be used for the position of the newly generated heart object
-     * @return {undefined}
+     * @param {[type]} position [description]
      */
-    var Heart = function(position) {
+    var Item = function(position) {
         // Initialize the enemy using Superclass's constructor
         Charactor.call(this);
 
-        // Flag that indicates if it is collected by the user.
-        // The default value is false (has not collected yet).
+        /**
+         * Flag that indicates if this instance is collected by the player.
+         * The default value is false (has not collected yet).
+         * @type {Boolean}
+         */
         this.collected = false;
 
-        // The score the player will earn when collected.
+        /**
+         * The score the player will earn when collected.
+         * This value will be the default value. If you want to change it,
+         *  you just simply overrides it in the subclass.
+         * @type {Number}
+         */
         this.SCORE = 10;
 
-        // Default sprite image of the player.
-        this.setSprite('images/Heart.png');
-
-        // Set the initial position of the heart.
+        // Set the initial position.
         this.setPosition(position);
     };
-    Heart.prototype = Object.create(Charactor.prototype);
-    Heart.prototype.constructor = Heart;
+    Item.prototype = Object.create(Charactor.prototype);
+    Item.prototype.constructor = Item;
 
     /**
-     * Updates the heart objects' properties.
-     * Currently, this function updates this.collected with the result
-     * from the collision checking with the player.
-     * @return {[type]} [description]
+     * Updates the Item object's properties.
+     * Currently, this function updates:
+     * <ul>
+     * <li>this.collected with the result from the collision checking
+     *  with the player.</li>
+     * <li>scores of the player</li>
+     * </ul>
+     * @return {undefined}
      */
-    Heart.prototype.update = function() {
-        // If the heart has been collected, I don't need to check the collision.
+    Item.prototype.update = function() {
+        // If the 'this' item has been collected, I don't need to
+        // check the collision.
         if (!this.collected && this.isColliding(player)) {
             this.collected = true;
             score.addScore(this.SCORE);
@@ -485,12 +494,12 @@
     };
 
     /**
-     * Renders the Heart object on the screen as long as the 'collected' is
+     * Renders the Item object on the screen as long as the 'collected' is
      * false
      * @override
      * @return {undefined}
      */
-    Heart.prototype.render = function() {
+    Item.prototype.render = function() {
         if (!this.collected) {
             ctx.drawImage(
                 Resources.get(this.sprite),
@@ -499,6 +508,24 @@
             );
         }
     };
+
+    /**
+     * Heart that the player collects.
+     * This class is a subclass of Item
+     * @constructor
+     * @param {Object} position - Position object that has x and y coordinates.
+     * This will be used for the position of the newly generated heart object
+     * @return {undefined}
+     */
+    var Heart = function(position) {
+        // Initialize the heart using Superclass's constructor
+        Item.call(this, position);
+
+        // Default sprite image of the heart.
+        this.setSprite('images/Heart.png');
+    };
+    Heart.prototype = Object.create(Item.prototype);
+    Heart.prototype.constructor = Heart;
 
     /**
      * Score class. Actually, I am not sure if the score should be a
