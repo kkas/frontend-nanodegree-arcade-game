@@ -874,76 +874,109 @@
     };
 
     /**
-     * Set the hearts on the board at the random positon.
-     * Each heart will have the different position.
-     * @param {Array} arrayOfHearts - An array that will store the new hearts.
-     * @param  {Number} num - How many hearts you want to generate.
-     * @return {undefined}
+     * Generates the item's position only if the position is vacant.
+     * This vacancy will be determined by the position objects in
+     * 'arrayOfItemPositions' array.
+     * @param  {Array} arrayOfItemPositions - Array that contains the position
+     * objects to indicate the positions have already been taken.
+     * @return {Object} New postion object
      */
-    var generateNewHearts = function(arrayOfHearts, num) {
-        var cnt,
-            newHeartPosition,
-            needToRegenerateHeart;
+    var generateEffectiveRandomPosition = function(arrayOfItemPositions) {
+        var newItemPosition,
+            needToRegenerate;
 
-        // For hearts, I don't want more than one hearts to be shown at the
+        // For items, I don't want more than one item to be shown at the
         // same position. Therefore, I checked the newly generated position
         // with the ones that have already generated. If it has the same
         // position, the position will be re-generate until it has the
         // different position.
-        for (cnt = 0; cnt < num; cnt++) {
-            do {
-                newHeartPosition = generateRandomItemPosition();
+        do {
+            newItemPosition = generateRandomItemPosition();
 
-                if (checkIfExists(allHearts, newHeartPosition)) {
-                    // console.log("need to regenerate heart.");
-                    needToRegenerateHeart = true;
-                } else {
-                    needToRegenerateHeart = false;
-                }
+            if (checkIfExists(arrayOfItemPositions, newItemPosition)) {
+                needToRegenerate = true;
+            } else {
+                needToRegenerate = false;
+            }
 
-            // Repeat this loop until needToRegenerateHeart becomes false
-            } while (needToRegenerateHeart);
+        // Repeat this loop until needToRegenerate becomes false
+        } while (needToRegenerate);
 
-            // console.log("newHeartPosition: " + newHeartPosition.x + ", " +
-            // newHeartPosition.y);
-            arrayOfHearts.push(new Heart(newHeartPosition));
-        }
+        return newItemPosition;
     };
 
     /**
-     * Set the gems on the board at the random positon.
-     * Each gem will have the different position.
-     * @param {Array} arrayOfGems - An array that will store the new gems.
-     * @param  {Number} num - How many gems you want to generate.
+     * Generates Items that will be used in the game.
+     * Currently, this creates item objects of:
+     * <ul>
+     * <li>Hearts</li>
+     * <li>Gems</li>
+     * </ul>
      * @return {undefined}
      */
-    var generateNewGems = function(arrayOfGems, num) {
+    var generateItems = function() {
+        var occupiedPositions = [];
+
+        // Delete all of the objects stored in the arrays before adding the
+        // new ones.
+        //
+        // In order for this deletion, I reset all the hearts and gems by
+        // inserting 0 to the lengths of the arrays and then, create new ones.
+        //
+        // Replacing the pointers to the arrays(objects) will not work since
+        // they are assigned in the properties in the global object.
+        //
+        // I searched for a way to delete all the elements in an array and
+        // found the solusion at stackoverflow by assinging 0 to the length of
+        // the array (the 2nd method).
+        // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
+        // javascript
+        allHearts.length = 0;
+        allGems.length = 0;
+
+        createItems(allHearts, occupiedPositions, NUM_HEARTS, Heart);
+        createItems(allGems, occupiedPositions, NUM_GEMS, Gem);
+    };
+
+    /**
+     * Creates Item objects of Klass (constructor) referes to. Since all of the
+     * classes that are the derived from the Item class have the same data
+     * structure, passing the constructor of the class I want to create works
+     * well.
+     *
+     * Each items that are created will have the different position by looking
+     * at the position objects in 'arrayOfOccupiedPos' array.
+     *
+     * The new position will be created only if the position is vacant.
+     *
+     * If no objects in 'arrayOfOccupiedPos' array have the same position
+     * with the newly generated position, 'newItemPosition', the position
+     * will be the position of the new objects.
+     *
+     * The objects in 'arrayOfOccupiedPos' array will be updated with all of
+     * the newly created position objects.
+     *
+     * @param {Array} newItemsArray - Array that will be used to store the newly
+     * generated objects.
+     * @param {Array} arrayOfOccupiedPositions - Array that contains the
+     * position objects which indicate the positions that have been taken.
+     * The objects in this array will be updated with all of the newly
+     * created position objects.
+     * @param  {Number} num - How many gems you want to generate.
+     * @param {Constructor} Klass - Constructor of the class you want to create.
+     * @return {undefined}
+     */
+    var createItems = function(newItemsArray, arrayOfOccupiedPos, num, Klass) {
         var cnt,
-            newGemPosition,
-            needToRegenerateGem;
+            newItemPosition;
 
-        // For gems, I don't want more than one gems to be shown at the
-        // same position. Therefore, I checked the newly generated position
-        // with the ones that have already generated. If it has the same
-        // position, the position will be re-generate until it has the
-        // different position.
         for (cnt = 0; cnt < num; cnt++) {
-            do {
-                newGemPosition = generateRandomItemPosition();
+            newItemPosition = generateEffectiveRandomPosition(
+                arrayOfOccupiedPos);
+            newItemsArray.push(new Klass(newItemPosition));
 
-                if (checkIfExists(allGems, newGemPosition)) {
-                    // console.log("need to regenerate gem.");
-                    needToRegenerateGem = true;
-                } else {
-                    needToRegenerateGem = false;
-                }
-
-            // Repeat this loop until needToRegenerateGem becomes false
-            } while (needToRegenerateGem);
-
-            // console.log("newGemPosition: " + newGemPosition.x + ", " +
-            // newGemPosition.y);
-            arrayOfGems.push(new Gem(newGemPosition));
+            // Save the position to update.
+            arrayOfOccupiedPos.push(newItemPosition);
         }
     };
 
@@ -984,21 +1017,7 @@
 
         player.resetPosition();
 
-        // Resets all the hearts by inserting 0 to the length of the array and
-        // then, create new one.
-        //
-        // At first try, I just replaced the reference of the allHearts to the
-        // newly created array returned from generateNewHearts(). However,
-        // this did not work since I have assigned the reference to the
-        // original array to the 'global' object.
-        //
-        // I searched for a way to delete all the elements in an array and
-        // found the solusion at stackoverflow by assinging 0 to the length of
-        // the array (the 2nd method).
-        // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
-        // javascript
-        allHearts.length = 0;
-        generateNewHearts(allHearts, NUM_HEARTS);
+        generateItems();
     };
 
     /**
@@ -1026,9 +1045,7 @@
         // Reset the player's position
         player.resetPosition();
 
-        // Reset the hearts
-        allHearts.length = 0;
-        generateNewHearts(allHearts, NUM_HEARTS);
+        generateItems();
     };
 
     // Now instantiate your objects.
@@ -1076,12 +1093,8 @@
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
 
-    // Instantiates all the hearts.
-    generateNewHearts(allHearts, NUM_HEARTS);
-
-    // Instantiates all the hearts.
-    // TODO: refactor this with hearts
-    generateNewGems(allGems, NUM_GEMS);
+    // Instantiates all the items.
+    generateItems();
 
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
