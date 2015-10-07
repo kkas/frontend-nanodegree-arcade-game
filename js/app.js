@@ -157,12 +157,20 @@
         });
 
         // Check to see if the enemy is colliding with the player.
-        if (this.isColliding(player)) {
+        // If the game is over, there is no need to check the collision.
+        if (!player.isPaused && this.isColliding(player)) {
             console.log('Collision detected!');
             // Adding score here means loosing the score.
             score.addScore(this.SCORE);
-            // Reset the stage
-            resetStage();
+
+            // IF the score reaches 0, the game is over.
+            if (score.getScore() <= 0) {
+                console.log('The game is over');
+                gameOver();
+            } else {
+                // Reset the stage
+                resetStage();
+            }
         }
 
         // Check to see if the enemy reaches out of the canvas or not.
@@ -171,6 +179,20 @@
             // position.
             this.setPosition(generateRandomEnemyPosition());
         }
+    };
+
+    /**
+     * Call this function when the game is over.
+     * This function turns on the flags:
+     * <ul>
+     * <li>for the player to be moved</li>
+     * <li>for the 'game over' message to show</li>
+     * </ul>
+     * @return {undefined}
+     */
+    var gameOver = function() {
+        player.isPaused = true;
+        message.showGameOver();
     };
 
     // Now write your own player class
@@ -211,6 +233,15 @@
         // ted from the position of the player.
         this.xDelta = 0;
         this.yDelta = 0;
+
+        /**
+         * Flag that indicates the player can move.
+         * This value will be used to prevent moving the player in situations
+         * such as when some messages are displayed on the board, or
+         * the game has been over.
+         * @type {Boolean}
+         */
+        this.isPaused = false;
 
         // Initialize the instance by setting default values.
         this.init();
@@ -405,7 +436,10 @@
                 break;
         }
 
-        this.setDeltaOrIgnore(step_x, step_y);
+        // Set the deltas only when the player is not paused.
+        if (!this.isPaused) {
+            this.setDeltaOrIgnore(step_x, step_y);
+        }
     };
 
     /**
@@ -466,7 +500,6 @@
         }
     };
 
-
     /**
      * Score class. Actually, I am not sure if the score should be a
      * class since I need only one instance. However, I think making it
@@ -481,6 +514,14 @@
 
         // Set the default score
         this.setScore(defaultScore);
+    };
+
+    /**
+     * Gets the current score.
+     * @return {Number} Current score
+     */
+    Score.prototype.getScore = function() {
+        return this.score;
     };
 
     /**
@@ -510,6 +551,9 @@
      * @return {[type]} [description]
      */
     Score.prototype.render = function() {
+        // Save the states before changing them.
+        ctx.save();
+
         ctx.font = '36pt Impact';
         ctx.fillStyle = 'white';
         ctx.strokeStyle = 'black';
@@ -517,6 +561,110 @@
         ctx.fillText('Score: ' + this.score, 10, 100);
         ctx.strokeText('Score: ' + this.score, 10, 100);
 
+        // Restore the privious setting.
+        ctx.restore();
+    };
+
+    /**
+     * Message class. The parameter to the constructor is the message that will
+     * be displayed on the screen. If you want to remove the message, simply
+     * set the message to an empty string by setMessage().
+     *
+     * Actually, I am not sure if the Message should be a
+     * class since I need only one instance. However, I think making it
+     * as a class is convinient since it can hold many relating functions like
+     * the other pseudo classical classes do.
+     *
+     * @constructor
+     * @return {Message} Newly created Message instance (with constructor mode)
+     */
+    var Message = function() {
+
+        /**
+         * Interger value that indicates there is no message to be shown.
+         * This value will be set to 'showMessage'.
+         * @type {Number}
+         */
+        this.NO_MESSAGE = 0;
+
+        /**
+         * Interger value that indicates the game is over.
+         * This value will be set to 'showMessage'.
+         * @type {Number}
+         */
+        this.GAME_OVER = 1;
+
+        /**
+         * This variable is used like a flag with an integer value that
+         * indicates whether the message needs to be shown or not.
+         * For example, 0 indicates there should be no message to display.
+         * 1 is for displaying the messages for 'game over'.
+         * Default is 0 (no message).
+         * @type {Number}
+         */
+        this.showMessage = this.NO_MESSAGE;
+    };
+
+    /**
+     * Call this when the game is over. This function will turn the flag on to
+     * display the messages for 'game over'.
+     * @return {undefined}
+     */
+    Message.prototype.showGameOver = function() {
+        this.showMessage = this.GAME_OVER;
+    };
+
+    /**
+     * Renders the message on the board. This function is called from
+     * engine.js.
+     * @return {undefined}
+     */
+    Message.prototype.render = function() {
+        var message_top = '',
+            message_bottom = '';
+
+        // If the 'show' flag is true, it means there's some messages I want
+        // to show.
+        if (this.showMessage) {
+
+            // Save the states before changing them.
+            ctx.save();
+
+            switch (this.showMessage) {
+                case this.GAME_OVER:
+                    message_top = 'Game Over';
+
+                    ctx.font = '70pt Impact';
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = 'yellow';
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 3;
+
+                    // Display the message in the middle of the canvas.
+                    // Draw the inner area of the text.
+                    ctx.fillText(
+                        message_top,
+                        canvasSize.effectiveWidth / 2,
+                        canvasSize.effectiveHeight / 2
+                    );
+
+                    // Draw the outer line of the text.
+                    ctx.strokeText(
+                        message_top,
+                        canvasSize.effectiveWidth / 2,
+                        canvasSize.effectiveHeight / 2
+                    );
+                break;
+                default:
+                    //nothing
+                    console.log('unexpected value is found in ' +
+                        'Message.prototype.render()');
+                break;
+            }
+
+            // Restore the privious setting.
+            ctx.restore();
+        }
     };
 
     /**
@@ -760,7 +908,9 @@
         // Array that stores the Heart objects.
         allHearts = [],
         // Score object that holds the score of the entire game.
-        score = new Score();
+        score = new Score(10),
+        // Message object. Only one instance of this should be created.
+        message = new Message();
 
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
@@ -790,4 +940,5 @@
     global.player = player;
     global.allHearts = allHearts;
     global.score = score;
+    global.message = message;
 })(this);
