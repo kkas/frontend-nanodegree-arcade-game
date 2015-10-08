@@ -937,7 +937,6 @@
      * 'game over'.
      * @return {undefined}
      */
-    //TODO: refactor
     Message.prototype.showGameOver = function() {
         this.showMessage = this.GAME_OVER;
     };
