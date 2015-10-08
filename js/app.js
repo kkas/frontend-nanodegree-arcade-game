@@ -957,6 +957,10 @@
      */
     Message.prototype.showGameOver = function() {
         this.showMessage = this.GAME_OVER;
+
+        // Change the score to 0 because it might be a negative value and
+        // I don't want to show the negative value as the score.
+        score.setScore(0);
     };
 
     /**
