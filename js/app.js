@@ -689,6 +689,9 @@
         // Initialize the heart using the superclass's constructor
         Item.call(this, position);
 
+        // Override the default score.
+        this.SCORE = 5;
+
         // Default sprite image of the heart.
         this.setSprite('images/Heart.png');
     };
@@ -1364,13 +1367,13 @@
          * randomly, this value is used as the slowest.
          * @type {Number}
          */
-        MIN_POSSIBLE_ENEMY_SPEED = 50,
+        MIN_POSSIBLE_ENEMY_SPEED = 10,
         /**
          * Maximum possible speed of the enemy. Since the speed are selected
          * randomly, this value is used as the fastest initially.
          * @type {Number}
          */
-        MAX_POSSIBLE_ENEMY_SPEED = 200,
+        MAX_POSSIBLE_ENEMY_SPEED = 100,
         /**
          * Speed that will be added to increase the speed of a enemy.
          * @type {Number}
