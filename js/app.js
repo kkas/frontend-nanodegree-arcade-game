@@ -1417,7 +1417,7 @@
          * Only one instance of this should be created.
          * @type {Score}
          */
-        score = new Score(10),
+        score = new Score(0),
         /**
          * Message instance.
          * Only one instance of this should be created.
