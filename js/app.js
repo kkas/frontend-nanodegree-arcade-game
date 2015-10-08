@@ -9,9 +9,9 @@
  *    |                   |
  * <Charactor>          <Item>
  *      |                 |
- *      ---------         ------------------
- *      |       |         |       |        |
- *   <Enemy> <Player>  <Heart>  <Gem>    <Key>
+ *      ---------         -------------------------
+ *      |       |         |       |        |      |
+ *   <Enemy> <Player>  <Heart>  <Gem>    <Key>  <Star>
  *
  * * <<other classes>>
  *   <Score>, <Message>
@@ -43,6 +43,9 @@
  *    - methods: changeColorRandomly(), setColor()
  * Key: Subclas of Item class. The instances of this class represent the
  *      Key-shaped objects the player collects.
+ *    - methods: <none>
+ * Star: Subclas of Item class. The instances of this class represent the
+ *      Star-shaped objects the player collects.
  *    - methods: <none>
  *
  * Score: The instance of this class holds and controls the score in this game.
@@ -820,6 +823,30 @@
     Key.prototype.constructor = Key;
 
     /**
+     * Star class. The instances of this class will be the items the player
+     * collects.
+     *
+     * This class is a subclass of Item class.
+     *
+     * @constructor
+     * @param {Object} position - Object representing its position of the
+     * instance. It must contain 'x' and 'y' properties.
+     * @return {Star} instance of this class. (with constructor mode)
+     */
+    var Star = function(position) {
+        // Initialize this instance using the superclass's constructor
+        Item.call(this, position);
+
+        // Override the default score.
+        this.SCORE = 30;
+
+        // Default sprite image of this instance.
+        this.setSprite('images/Star.png');
+    };
+    Star.prototype = Object.create(Item.prototype);
+    Star.prototype.constructor = Star;
+
+    /**
      * Score class.
      *
      * Actually, I am not sure if this class should be a class since I need
@@ -1181,7 +1208,11 @@
             // Flag for generating the key object. If true, generate a key.
             // The probability to generate the key is 1/4.
             generateKeyThisTime =
-                getRandomIntInclusive(0, 3) === 0 ? true :false;
+                getRandomIntInclusive(0, 3) === 0 ? true :false,
+            // Flag for generating the star object. If true, generate a star.
+            // The probability to generate the key is 1/2.
+            generateStarThisTime =
+                getRandomIntInclusive(0, 1) === 0 ? true :false;
 
         // Delete all of the objects stored in the arrays before adding the
         // new ones.
@@ -1204,6 +1235,11 @@
         // Generate the key only this flag is true.
         if (generateKeyThisTime) {
             createItems(allItems, occupiedPositions, NUM_KEYS, Key);
+        }
+
+        // Generate the star only this flag is true.
+        if (generateStarThisTime) {
+            createItems(allItems, occupiedPositions, NUM_STARS, Star);
         }
 
         // Sort the items in 'allItems' to drawing items correctly.
@@ -1419,6 +1455,11 @@
          * @type {Number}
          */
         NUM_KEYS = 1,
+        /**
+         * Number of Star instances that will be created.
+         * @type {Number}
+         */
+        NUM_STARS = 1,
         /**
          * Score instance that holds the score of the entire game.
          * Only one instance of this should be created.

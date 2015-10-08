@@ -10,6 +10,7 @@
 * Your objective is to move the player to get the high score. You get points by collecting items. The points vary depending on the item:
   * Heart: 5 pts
   * Gem: 10 pts
+  * Star: 30pts (only appears once in a while)
   * Key: 100pts (only appears once in a while)
 * Move the player to the water area to generate more items!! **But be carefull!!** The bugs will get angry and run faster if you reaches the waterarea.
 * When the player hit the bug, you will loose 10pts. When the score reaches 0, the game will be over.
