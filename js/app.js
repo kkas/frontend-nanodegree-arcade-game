@@ -166,14 +166,13 @@
      * 'objInQuestion'. False, otherwise.
      */
     Entity.prototype.isColliding = function(objInQuestion) {
-        //TODO: objInQuestion is supposed to be used, but it is not.
         //TODO: check the type of 'objInQuestion' to ensure it has the bottom,
         //right, top, and left properties.
         return (
-            this.top < player.bottom &&
-            this.left < player.right &&
-            this.bottom > player.top &&
-            this.right > player.left
+            this.top < objInQuestion.bottom &&
+            this.left < objInQuestion.right &&
+            this.bottom > objInQuestion.top &&
+            this.right > objInQuestion.left
         );
     };
 
