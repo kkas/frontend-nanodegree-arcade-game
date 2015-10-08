@@ -971,6 +971,28 @@
 
         createItems(allItems, occupiedPositions, NUM_GEMS, Heart);
         createItems(allItems, occupiedPositions, NUM_GEMS, Gem);
+
+        // Sort the items in 'allItems' for drawing items.
+        //
+        // I think I need this sort in order to draw item objects correctly.
+        // In engine.js, render() for items are called in the order that the
+        // item is stored (because the allItems is an Array and they are
+        // retrieved by forEach()). Therefore, it is possible that the item
+        // that has larger index is drawn underneath the item that has smaller
+        // index. When this case hapens, it does not look good.
+        // (I am grasping the game board as a matrix. Images that are
+        // drawn bigger number on x and y coordinates have larger indexes.)
+        //
+        // Hence, I sort the items in the order that greater y-coordinates
+        // has the greater indexes. I ignore x-coordinates because I don't think
+        // it matters in terms of the problem that I am mentioning.
+        //
+        // For the Array.prototype.sort(), I read the following manual in MDN.
+        // // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Glo
+        // bal_Objects/Array/sort
+        allItems.sort(function(a, b) {
+            return a.y <= b.y ? -1 : 1;
+        });
     };
 
     /**
