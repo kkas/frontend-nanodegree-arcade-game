@@ -459,7 +459,7 @@
 
         // Check to see if the player reaches the water.
         // If so, the player will go to the next stage.
-        if (this.hasReachedGoal()) {
+        if (this.hasReachedGoal(waterArea)) {
             console.log('The player has reached the water!' +
                 'Go to the next stage.');
             nextStage();
@@ -467,24 +467,13 @@
     };
 
     /**
-     * Checks if this instance reaches the goal (the water areas).
-     * The logic here is the same as the Entity.prototype.isColliding
-     * (collision detection).
-     *
-     * If this instance collides into the water area, that means the player
-     * reaches the goal.
-     * @return {Boolean} True when the player reached the goal.
-     * False, otherwise.
+     * This function is 'isColliding()'.
+     * I think this makes a little bit easier to read the source code.
+     * For more details, see 'isColliding()'.
+     * @type {Boolean} - True if the player reaches the goal. False, otherwise.
      */
-    //TODO: refactor
-    Player.prototype.hasReachedGoal = function() {
-        return (
-            this.top < waterArea.bottom &&
-            this.left < waterArea.right &&
-            this.bottom > waterArea.top &&
-            this.right > waterArea.left
-        );
-    };
+    Player.prototype.hasReachedGoal = Player.prototype.isColliding;
+
 
     /**
      * Set the deltas for the 'x' and 'y'. When these values are set,
