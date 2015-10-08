@@ -166,8 +166,6 @@
      * 'objInQuestion'. False, otherwise.
      */
     Entity.prototype.isColliding = function(objInQuestion) {
-        //TODO: check the type of 'objInQuestion' to ensure it has the bottom,
-        //right, top, and left properties.
         return (
             this.top < objInQuestion.bottom &&
             this.left < objInQuestion.right &&
