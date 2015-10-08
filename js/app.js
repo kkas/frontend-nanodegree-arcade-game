@@ -9,9 +9,9 @@
  *    |                   |
  * <Charactor>          <Item>
  *      |                 |
- *      ---------         ---------
- *      |       |         |       |
- *   <Enemy> <Player>  <Heart>  <Gem>
+ *      ---------         ------------------
+ *      |       |         |       |        |
+ *   <Enemy> <Player>  <Heart>  <Gem>    <Key>
  *
  * * <<other classes>>
  *   <Score>, <Message>
@@ -41,6 +41,9 @@
  * Gem: Subclass of Item class. The instances of this class represent the
  *       Gem-shaped objects the player collects.
  *    - methods: changeColorRandomly(), setColor()
+ * Key: Subclas of Item class. The instances of this class represent the
+ *      Key-shaped objects the player collects.
+ *    - methods: <none>
  *
  * Score: The instance of this class holds and controls the score in this game.
  *        Only one instance of this class should be create in the entire game.
@@ -790,6 +793,30 @@
     };
 
     /**
+     * Key class. The instances of this class will be the items the player
+     * collects.
+     *
+     * This class is a subclass of Item class.
+     *
+     * @constructor
+     * @param {Object} position - Object representing its position of the
+     * instance. It must contain 'x' and 'y' properties.
+     * @return {Key} instance of this class. (with constructor mode)
+     */
+    var Key = function(position) {
+        // Initialize this instance using the superclass's constructor
+        Item.call(this, position);
+
+        // Override the default score.
+        this.SCORE = 100;
+
+        // Default sprite image of this instance.
+        this.setSprite('images/Key.png');
+    };
+    Key.prototype = Object.create(Item.prototype);
+    Key.prototype.constructor = Key;
+
+    /**
      * Score class.
      *
      * Actually, I am not sure if this class should be a class since I need
@@ -1138,11 +1165,16 @@
      * <ul>
      * <li>Hearts</li>
      * <li>Gems</li>
+     * <li>Keys</li>
      * </ul>
      * @return {undefined}
      */
     var generateItems = function() {
-        var occupiedPositions = [];
+        var occupiedPositions = [],
+            // Flag for generating the key object. If true, generate a key.
+            // The probability to generate the key is 1/4.
+            generateKeyThisTime =
+                getRandomIntInclusive(0, 3) === 0 ? true :false;
 
         // Delete all of the objects stored in the arrays before adding the
         // new ones.
@@ -1161,6 +1193,11 @@
 
         createItems(allItems, occupiedPositions, NUM_GEMS, Heart);
         createItems(allItems, occupiedPositions, NUM_GEMS, Gem);
+
+        // Generate the key only this flag is true.
+        if (generateKeyThisTime) {
+            createItems(allItems, occupiedPositions, NUM_KEYS, Key);
+        }
 
         // Sort the items in 'allItems' to drawing items correctly.
         //
@@ -1370,6 +1407,11 @@
          * @type {Number}
          */
         NUM_GEMS = 2,
+        /**
+         * Number of Key instances that will be created.
+         * @type {Number}
+         */
+        NUM_KEYS = 1,
         /**
          * Score instance that holds the score of the entire game.
          * Only one instance of this should be created.
