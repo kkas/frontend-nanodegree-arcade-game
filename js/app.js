@@ -936,9 +936,6 @@
      * @return {undefined}
      */
     Message.prototype.render = function() {
-        var messageTop = '',
-            messageBottom = '';
-
         if (this.showMessage) {
 
             // Save the states before changing them.
@@ -946,27 +943,49 @@
 
             switch (this.showMessage) {
                 case this.GAME_OVER:
-                    messageTop = 'Game Over';
+                        // Message displayed on the top
+                    var messageTop = 'Game Over',
+                        // Display the message in the middle of the canvas.
+                        messageTopX = canvasSize.effectiveWidth / 2,
+                        messageTopY = canvasSize.effectiveHeight - 200,
+                        // Message displayed on the bottom
+                        messageBottom1 = 'Reload this page',
+                        messageBottom2 = 'to restart the game',
+                        // Display the message in the middle of the canvas.
+                        messageBottomX = messageTopX,
+                        messageBottomY1 = canvasSize.effectiveHeight - 50,
+                        messageBottomY2 = canvasSize.effectiveHeight;
 
+                    // ----------------------
+                    // Settings for messageTop
+                    // ----------------------
                     ctx.font = '70pt Impact';
                     ctx.textAlign = "center";
                     ctx.fillStyle = 'yellow';
                     ctx.strokeStyle = 'white';
                     ctx.lineWidth = 3;
 
-                    // Display the message in the middle of the canvas.
                     // Draw the inner area of the text.
-                    ctx.fillText(
-                        messageTop,
-                        canvasSize.effectiveWidth / 2,
-                        canvasSize.effectiveHeight / 2
-                    );
+                    ctx.fillText(messageTop, messageTopX, messageTopY);
 
                     // Draw the outer line of the text.
-                    ctx.strokeText(
-                        messageTop,
-                        canvasSize.effectiveWidth / 2,
-                        canvasSize.effectiveHeight / 2
+                    ctx.strokeText(messageTop, messageTopX, messageTopY);
+
+                    // ----------------------
+                    // Settings for messageBottom
+                    // ----------------------
+                    ctx.font = '30pt Impact';
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = 'yellow';
+
+                    // Draw the message bottom 1
+                    ctx.fillText(
+                        messageBottom1, messageBottomX, messageBottomY1
+                    );
+
+                    // Draw the message bottom 2
+                    ctx.fillText(
+                        messageBottom2, messageBottomX, messageBottomY2
                     );
                 break;
                 default:
