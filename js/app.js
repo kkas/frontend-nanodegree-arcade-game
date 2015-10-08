@@ -9,22 +9,52 @@
      * @return {undefined}
      */
     var Charactor = function() {
-        // Position of the enemy on the x-axis.
+        /**
+         * Position of the enemy on the x-axis.
+         * @type {Number}
+         */
         this.x = 0;
 
-        // Position of the enemy on the y-axis.
+        /**
+         * Position of the enemy on the y-axis.
+         * @type {Number}
+         */
         this.y = 0;
 
-        // Coordinates of the enemy object on the canvas.
-        // Used for collision detection.
+        /**
+         * Top coordinate of the charactor object on the canvas.
+         * This is used for collision detection.
+         * @type {Number}
+         */
         this.top = 0;
+
+        /**
+         * Bottom coordinate of the charactor object on the canvas.
+         * This is used for collision detection.
+         * @type {Number}
+         */
         this.bottom = 0;
+
+        /**
+         * Left coordinate of the charactor object on the canvas.
+         * This is used for collision detection.
+         * @type {Number}
+         */
         this.left = 0;
+
+        /**
+         * Right coordinate of the charactor object on the canvas.
+         * This is used for collision detection.
+         * @type {Number}
+         */
         this.right = 0;
 
-        // The image/sprite for our enemies, this uses
-        // a helper we've provided to easily load images
-        // You need to call setSprite() to set the image.
+        /**
+         * The image/sprite for our enemies, this uses
+         * a helper we've provided to easily load images
+         * You need to call setSprite() to set the image.
+         * @type {String}
+         */
         this.sprite = '';
     };
 
@@ -111,10 +141,16 @@
         // Initialize the enemy using Superclass's constructor
         Charactor.call(this);
 
-        // How much pixel the enemy moves per frame.
+        /**
+         * How much pixel the enemy moves per frame.
+         * @type {Number}
+         */
         this.enemyMovePerFrame = 0;
 
-        // Score that the player will loose when hit
+        /**
+         * Score that the player will loose when hit
+         * @type {Number}
+         */
         this.SCORE = -10;
 
         // Set the enemy's sprite.
@@ -229,29 +265,58 @@
         // Initialize the enemy using Superclass's constructor
         Charactor.call(this);
 
-        // Value of one step on the x-axis
+        /**
+         * Value of one step on the x-axis
+         * @type {Number}
+         */
         this.INCREMENT_VALUE_OF_X = 101;
 
-        // Value of one step on the y-axis
+        /**
+         * Value of one step on the y-axis
+         * @type {Number}
+         */
         this.INCREMENT_VALUE_OF_Y = 83;
 
         // Default sprite image of the player.
         this.setSprite('images/char-boy.png');
 
-        // Player's initial position.
-        // The numbers 2 and 5 indicate colum num and row num respectively.
-        // The number starts from 0, so 2 will be the 3rd column.
+        /**
+         * Player's initial position.
+         * The numbers 2 and 5 indicate colum num and row num respectively.
+         * The number starts from 0, so 2 will be the 3rd column.
+         * @type {[type]}
+         */
         this.INITIAL_POSITION_X = this.INCREMENT_VALUE_OF_X * 2;
         this.INITIAL_POSITION_Y = this.INCREMENT_VALUE_OF_Y * 5;
 
-        // These values are used to increment the player's position.
-        // When the position of the player needs to be updated, for
-        // example, when a key is pressed by the user,
-        // the incremental/decremental value will be stored.
-        // The reason for having these properties are to wait
-        // for update() being called, in which these values are added to/subtrac
-        // ted from the position of the player.
+        /**
+         * This value is used to increment the player's position on the x-xis.
+         * When the player's position needs to be updated, for example,
+         * when a key is pressed by the user,
+         * the value for increment/decrement will be stored.
+         *
+         * This value is associated with yDelta.
+         *
+         * The reason for having these properties are to wait
+         * for update() being called so that these values are added to/subtrac
+         * ted from the position of the player correctly.
+         * @type {Number}
+         */
         this.xDelta = 0;
+
+        /**
+         * This value is used to increment the player's position on the y-axis.
+         * When the player's position needs to be updated, for example,
+         * when a key is pressed by the user,
+         * the value for increment/decrement will be stored.
+         *
+         * This value is associated with xDelta.
+         *
+         * The reason for having these properties are to wait
+         * for update() being called so that these values are added to/subtrac
+         * ted from the position of the player correctly.
+         * @type {Number}
+         */
         this.yDelta = 0;
 
         /**
@@ -649,17 +714,20 @@
      * @return {Score} Newly created Score object (with constructor mode)
      */
     var Score = function(defaultScore) {
-        // The score
+        /**
+         * The score
+         * @type {Number}
+         */
         this.score = 0;
 
         // Set the default score
         this.setScore(defaultScore);
 
+        // Do this after score is set in order to set the initial score
         /**
          * The highest score that the player has gotten in the game.
          * @type {Number}
          */
-        // Do this after score is set in order to set the initial score
         this.highScore = this.getScore();
     };
 
@@ -1124,46 +1192,88 @@
     // Place all enemy objects in an array called allEnemies
     // Place the player object in a variable called player
 
-    // Number of enemies
+    /**
+     * Number of enemies
+     * @type {Number}
+     */
     var NUM_ENEMIES = 5,
-        // Width in pixels of the sprite image. Currently, all of the sprites
-        // have the same width.
+        /**
+         * Width in pixels of the sprite image. Currently, all of the sprites
+         * have the same width.
+         * @type {Number}
+         */
         SPRITE_WIDTH = 101,
-        // Height in pixels of the sprite image. Currently, all of the sprites
-        // have the same height.
+        /**
+         * Height in pixels of the sprite image. Currently, all of the sprites
+         * have the same height.
+         * @type {Number}
+         */
         SPRITE_HEIGHT = 83,
-        // The invisible top padding of the sprite. Adjusting this value does
-        // not affect the position of the sprite. This is used only for drawing
-        // the image.
+        /**
+         * The invisible top padding of the sprite. Adjusting this value does
+         * not affect the position of the sprite. This is used only for drawing
+         * the image.
+         * @type {Number}
+         */
         SPRITE_TOP_PADDING = 30,
-        // Minimum possible speed of the enemy. Since the speed are selected
-        // randomly, this value is used for the slowest value in the range.
+        /**
+         * Minimum possible speed of the enemy. Since the speed are selected
+         * randomly, this value is used for the slowest value in the range.
+         * @type {Number}
+         */
         MIN_POSSIBLE_ENEMY_SPEED = 50,
-        // Maximum possible speed of the enemy. Since the speed are selected
-        // randomly, this value is used for the fastest value in the range
-        // as the initial value.
+        /**
+         * Maximum possible speed of the enemy. Since the speed are selected
+         * randomly, this value is used for the fastest value in the range
+         * as the initial value.
+         * @type {Number}
+         */
         MAX_POSSIBLE_ENEMY_SPEED = 200,
-        // Speed that will be added to increase the speed of the enemies.
+        /**
+         * Speed that will be added to increase the speed of the enemies.
+         * @type {Number}
+         */
         ADDITIONAL_ENEMY_SPEED = 50,
-        // Array that stores the Enemy objects.
+        /**
+         * Array that stores the Enemy objects.
+         * @type {Array}
+         */
         allEnemies = [],
-        // Player object
+        /**
+         * Player object
+         * @type {Player}
+         */
         player = new Player(),
-        // Default position of the enemy on x-axis. Since the enemy comes in
-        // from the left side of the game board, the value is a negative value.
+        /**
+         * Default position of the enemy on x-axis. Since the enemy comes in
+         * from the left side of the game board, the value is a negative value.
+         * @type {Number}
+         */
         ENEMY_INITIAL_X = -200,
         /**
          * Array that holds all the items, such as Gems, Hearts, in the game
          * @type {Array}
          */
         allItems = [],
-        // Number of Hearts
+        /**
+         * Number of Hearts
+         * @type {Number}
+         */
         NUM_HEARTS = 2,
-        // Number of Gems
+        /**
+         * Number of Gems
+         * @type {Number}
+         */
         NUM_GEMS = 2,
-        // Score object that holds the score of the entire game.
+        /**
+         * Score object that holds the score of the entire game.
+         * @type {Score}
+         */
         score = new Score(10),
-        // Message object. Only one instance of this should be created.
+        /**
+         * Message object. Only one instance of this should be created.
+         * @type {Message}
+         */
         message = new Message();
 
     // Instantiates all of the enemies.
