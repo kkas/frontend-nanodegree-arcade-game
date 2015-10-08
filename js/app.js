@@ -293,10 +293,7 @@
                 console.log('The game is over');
                 gameOver();
             } else {
-                // Reset the stage
-                // TODO: Refactor this name. This should imply reset the
-                // player's position
-                resetStage();
+                player.resetPosition();
             }
         }
 
@@ -1258,18 +1255,6 @@
         }
 
         return false;
-    };
-
-    /**
-     * Reset the stage by resetting the positions of the player and the enemies.
-     * @return {undefined}
-     */
-    var resetStage = function() {
-        resetEnemiesPositions();
-
-        player.resetPosition();
-
-        // generateItems(); // bug.
     };
 
     /**
