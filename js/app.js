@@ -400,23 +400,23 @@
     /**
      * Sets delta(next step) values of x and y if the player's new location is
      * valid.
-     * @param {Number} dt_x - A delta value on x-axis.
-     * @param {Number} dt_y - A delta value on y-axis.
+     * @param {Number} dtX - A delta value on x-axis.
+     * @param {Number} dtY - A delta value on y-axis.
      * @return {undifined}
      */
-    Player.prototype.setDeltaOrIgnore = function(dt_x, dt_y) {
-        var new_dt_x,
-            new_dt_y;
+    Player.prototype.setDeltaOrIgnore = function(dtX, dtY) {
+        var newDtX,
+            newDtY;
 
-        if (dt_x !== undefined && this.canMoveOnX(dt_x)) {
-            new_dt_x = dt_x;
+        if (dtX !== undefined && this.canMoveOnX(dtX)) {
+            newDtX = dtX;
         }
 
-        if (dt_y !== undefined && this.canMoveOnY(dt_y)) {
-            new_dt_y = dt_y;
+        if (dtY !== undefined && this.canMoveOnY(dtY)) {
+            newDtY = dtY;
         }
 
-        this.setDelta(new_dt_x, new_dt_y);
+        this.setDelta(newDtX, newDtY);
     };
 
     /**
@@ -432,24 +432,24 @@
      * @return {undefined}
      */
     Player.prototype.handleInput = function(key) {
-        var step_x,
-            step_y;
+        var stepX,
+            stepY;
 
         switch(key) {
             case 'left':
-                step_x = this.INCREMENT_VALUE_OF_X * -1;
+                stepX = this.INCREMENT_VALUE_OF_X * -1;
                 break;
 
             case 'right':
-                step_x = this.INCREMENT_VALUE_OF_X;
+                stepX = this.INCREMENT_VALUE_OF_X;
                 break;
 
             case 'up':
-                step_y = this.INCREMENT_VALUE_OF_Y * -1;
+                stepY = this.INCREMENT_VALUE_OF_Y * -1;
                 break;
 
             case 'down':
-                step_y = this.INCREMENT_VALUE_OF_Y;
+                stepY = this.INCREMENT_VALUE_OF_Y;
                 break;
 
             default:
@@ -458,7 +458,7 @@
 
         // Set the deltas only when the player is not paused.
         if (!this.isPaused) {
-            this.setDeltaOrIgnore(step_x, step_y);
+            this.setDeltaOrIgnore(stepX, stepY);
         }
     };
 
@@ -778,8 +778,8 @@
      * @return {undefined}
      */
     Message.prototype.render = function() {
-        var message_top = '',
-            message_bottom = '';
+        var messageTop = '',
+            messageBottom = '';
 
         // If the 'show' flag is true, it means there's some messages I want
         // to show.
@@ -790,7 +790,7 @@
 
             switch (this.showMessage) {
                 case this.GAME_OVER:
-                    message_top = 'Game Over';
+                    messageTop = 'Game Over';
 
                     ctx.font = '70pt Impact';
                     ctx.textAlign = "center";
@@ -801,14 +801,14 @@
                     // Display the message in the middle of the canvas.
                     // Draw the inner area of the text.
                     ctx.fillText(
-                        message_top,
+                        messageTop,
                         canvasSize.effectiveWidth / 2,
                         canvasSize.effectiveHeight / 2
                     );
 
                     // Draw the outer line of the text.
                     ctx.strokeText(
-                        message_top,
+                        messageTop,
                         canvasSize.effectiveWidth / 2,
                         canvasSize.effectiveHeight / 2
                     );
