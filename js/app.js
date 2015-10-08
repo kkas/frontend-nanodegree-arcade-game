@@ -1,3 +1,32 @@
+/**
+ * I have created some classes with some inheritance. So, I will describe
+ * the relationships between them.
+ *
+ * <Class Relationship>
+ * <Charactor>
+ *      |
+ *      ----------------
+ *      |       |       |
+ *   <Enemy> <Player> <Item>
+ *                      |
+ *                      ---------
+ *                      |        |
+ *                     <Heart> <Gem>
+ *
+ * Charactor: Superclass of other classes
+ * Enemy: Subclass of Charactor class. The instances of this class represent
+ *        the enemies on the board.
+ * Player: Subclass of Charactor class. The instance of this class represents
+ *        the player. Only one instance shoulud be created in the entire game.
+ * Item: Subclass of Charactor class. The instances of this class represent
+ *       the items to be collected by the player.
+ * Heart: Subclass of Item class. The instances of this class represent the
+ *       Heart-shaped objects the player collects.
+ * Gem: Subclass of Item class. The instances of this class represent the
+ *       Gem-shaped objects the player collects.
+ *
+ */
+
 (function(global) {
     // Run the entire code of this file in 'strict' mode
     'use strict';
