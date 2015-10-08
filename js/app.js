@@ -1191,7 +1191,7 @@
         // javascript
         allItems.length = 0;
 
-        createItems(allItems, occupiedPositions, NUM_GEMS, Heart);
+        createItems(allItems, occupiedPositions, NUM_HEARTS, Heart);
         createItems(allItems, occupiedPositions, NUM_GEMS, Gem);
 
         // Generate the key only this flag is true.
