@@ -28,9 +28,9 @@
  *    - methods: getSpeed(), setSpeed(), update(), increaseSpeed()
  * Player: Subclass of Charactor class. The instance of this class represents
  *        the player. Only one instance should be created in the entire game.
- *    - methods: init(), resetPosition(), update(), hasReachedGoal(),
- *               setDelta(), resetDelta(), canMoveOnX(), canMoveOnY(),
- *               setDeltaOrIgnore(), handleInput()
+ *    - methods: resetPosition(), update(), hasReachedGoal(), setDelta(),
+ *               resetDelta(), canMoveOnX(), canMoveOnY(), setDeltaOrIgnore(),
+ *               handleInput()
  *
  * Item: Subclass of Entity class. The instances of this class represent
  *       the items the player collects.
@@ -402,24 +402,14 @@
          */
         this.isPaused = false;
 
-        // Initialize the instance by setting default values.
-        this.init();
-    };
-    Player.prototype = Object.create(Charactor.prototype);
-    Player.prototype.constructor = Player;
-
-    /**
-     * Initializes this instance.
-     * Whatever the initialization functions are defined here
-     * @return {undefined}
-     */
-    Player.prototype.init = function() {
         // Set this player's initial position.
         this.resetPosition();
 
-        // Set the initial value.
+        // Set the initial value of deltas.
         this.resetDelta();
     };
+    Player.prototype = Object.create(Charactor.prototype);
+    Player.prototype.constructor = Player;
 
     /**
      * Resets the position of this instance to the initial postion.
