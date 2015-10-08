@@ -315,21 +315,6 @@
         this.setSpeed(this.getSpeed() + speed);
     };
 
-    /**
-     * Call this function when the game is over.
-     * This function currently turns on:
-     * <ul>
-     * <li>the flag for the player to be moved</li>
-     * <li>the flag for the 'game over' message to show</li>
-     * </ul>
-     * @return {undefined}
-     */
-    //TODO: move this class to the appropriate place.
-    var gameOver = function() {
-        player.isPaused = true;
-        message.showGameOver();
-    };
-
     // Now write your own player class
     // This class requires an update(), render() and
     // a handleInput() method.
@@ -1035,6 +1020,20 @@
      */
     var getRandomIntInclusive = function(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    /**
+     * Call this function when the game is over.
+     * This function currently turns on:
+     * <ul>
+     * <li>the flag for the player to be moved</li>
+     * <li>the flag for the 'game over' message to show</li>
+     * </ul>
+     * @return {undefined}
+     */
+    var gameOver = function() {
+        player.isPaused = true;
+        message.showGameOver();
     };
 
     /**
