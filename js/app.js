@@ -1,6 +1,6 @@
 /**
  * I have created some classes with some inheritance. So, I will describe
- * the relationships between them.
+ * the relationships between them to give the bird's eye of the program.
  *
  * <Class Relationship>
  * <Entity>
@@ -13,6 +13,8 @@
  *      |       |         |       |
  *   <Enemy> <Player>  <Heart>  <Gem>
  *
+ * * <<other classes>>
+ *   <Score>, <Message>
  *
  * Entity: Superclass of Charactor and Item classes. This class contains common
  *         properties and methods to be used as entity in this game.
@@ -25,13 +27,13 @@
  *        the enemies on the board.
  *    - methods: getSpeed(), setSpeed(), update(), increaseSpeed()
  * Player: Subclass of Charactor class. The instance of this class represents
- *        the player. Only one instance shoulud be created in the entire game.
+ *        the player. Only one instance should be created in the entire game.
  *    - methods: init(), resetPosition(), update(), hasReachedGoal(),
  *               setDelta(), resetDelta(), canMoveOnX(), canMoveOnY(),
  *               setDeltaOrIgnore(), handleInput()
  *
  * Item: Subclass of Entity class. The instances of this class represent
- *       the items to be collected by the player.
+ *       the items the player collects.
  *    - methods: update(), render()
  * Heart: Subclass of Item class. The instances of this class represent the
  *       Heart-shaped objects the player collects.
@@ -39,6 +41,14 @@
  * Gem: Subclass of Item class. The instances of this class represent the
  *       Gem-shaped objects the player collects.
  *    - methods: changeColorRandomly(), setColor()
+ *
+ * Score: The instance of this class holds and controls the score in this game.
+ *        Only one instance of this class should be create in the entire game.
+ *    - methods: getScore(), setScore(), addScore(), render()
+ * Message: The instance of this class holds and controls the score in this
+ *          game. Only one instance of this class should be create in the
+ *          entire game.
+ *    - methods: showGameOver, render()
  */
 
 (function(global) {
@@ -49,51 +59,56 @@
      * This class is the superclass of Charactor and Item classes.
      * This class contains the common properties and methods to be used as
      * an entity in this game
+     * @constructor
+     * @return {Entity} instance of this class. (with constructor mode)
      */
     var Entity = function() {
         /**
-         * Position of the enemy on the x-axis.
+         * Position of this instance on the x-axis.
+         * This value always equals to the 'left'.
          * @type {Number}
          */
         this.x = 0;
 
         /**
-         * Position of the enemy on the y-axis.
+         * Position of this instance on the y-axis.
+         * This value always equals to the 'top'.
          * @type {Number}
          */
         this.y = 0;
 
         /**
-         * Top coordinate of the charactor object on the canvas.
+         * Top coordinate of this instance.
          * This is used for collision detection.
          * @type {Number}
          */
         this.top = 0;
 
         /**
-         * Bottom coordinate of the charactor object on the canvas.
+         * Bottom coordinate of this instance.
          * This is used for collision detection.
          * @type {Number}
          */
         this.bottom = 0;
 
         /**
-         * Left coordinate of the charactor object on the canvas.
+         * Left coordinate of this instance.
          * This is used for collision detection.
          * @type {Number}
          */
         this.left = 0;
 
         /**
-         * Right coordinate of the charactor object on the canvas.
+         * Right coordinate of this instance.
          * This is used for collision detection.
          * @type {Number}
          */
         this.right = 0;
 
         /**
-         * The image/sprite for our enemies, this uses
-         * a helper we've provided to easily load images
+         * The image/sprite for the instance, this uses
+         * a helper we've provided to easily load images.
+         *
          * You need to call setSprite() to set the image.
          * @type {String}
          */
@@ -163,10 +178,12 @@
     };
 
     /**
-     * Creates a new charactor.
-     * This class is also a superclass of Enemy and Player classes
+     * Charactor class.
+     *
+     * This class is a subclass of Entity class and also a superclass of
+     * Enemy and Player classes.
      * @constructor
-     * @return {undefined}
+     * @return {Charactor} instance of this class. (with constructor mode)
      */
     var Charactor = function() {
         // Initialize this instance using Superclass's constructor
@@ -176,8 +193,7 @@
     Charactor.prototype.constructor = Charactor;
 
     /**
-     * Renders the charactor on the screen, required method for game, shared
-     * method.
+     * Renders the instance on the screen.
      * @return {undefined}
      */
     Charactor.prototype.render = function() {
@@ -186,22 +202,25 @@
     };
 
     /**
-     * Enemies our player must avoid.
-     * This class is a subclass of Charactor
+     * Enemy Class. The instances of this class are the enemies our player
+     * must avoid.
+     *
+     * This class is a subclass of Charactor class.
+     *
      * @constructor
      * @param {Object} position - The object representing the position
-     * @param {Number} speed - The speed of the enemy.
-     * @return {undefined}
+     * @param {Number} speed - The initial speed of this instance.
+     * @return {Enemy} instance of this class. (with constructor mode)
      */
     var Enemy = function(position, speed) {
         // Variables applied to each of our instances go here,
         // we've provided one for you to get started
 
-        // Initialize the enemy using Superclass's constructor
+        // Initialize this instance using the superclass's constructor
         Charactor.call(this);
 
         /**
-         * How much pixel the enemy moves per frame.
+         * How much pixel this instance moves per frame.
          * @type {Number}
          */
         this.enemyMovePerFrame = 0;
@@ -212,33 +231,31 @@
          */
         this.SCORE = -10;
 
-        // Set the enemy's sprite.
+        // Set the sprite of this instance.
         this.setSprite('images/enemy-bug.png');
 
-        // Set the initial position of the enemy.
+        // Set the initial position of this instance.
         this.setPosition(position);
 
-        // Set the initial speed of the enemy.
+        // Set the initial speed of this instance.
         this.setSpeed(speed);
     };
     Enemy.prototype = Object.create(Charactor.prototype);
     Enemy.prototype.constructor = Enemy;
 
     /**
-     * Gets the speed of the enemy.
-     * This value equals to the number of pixels the enemy moves
-     * per frame.
-     * @return {Number} - The curent speed of the enemy.
+     * Gets the speed of this instance.
+     * This value equals to the number of pixels this instance moves per frame.
+     * @return {Number} - The curent speed of this instance.
      */
     Enemy.prototype.getSpeed = function() {
         return this.enemyMovePerFrame;
     };
 
     /**
-     * Sets the speed of the enemy.
-     * This value equals to the number of pixels the enemy moves
-     * per frame.
-     * @param {Number} speed - The enemy's speed.
+     * Sets the speed of this instance.
+     * This value equals to the number of pixels this instance moves per frame.
+     * @param {Number} speed - The new speed of this instance.
      * @return {undefined}
      */
     Enemy.prototype.setSpeed = function(speed) {
@@ -246,8 +263,9 @@
     };
 
     /**
-     * Updates the enemy's position, required method for game
-     * If the enemy collides into the player, the player will
+     * Updates the properties of this instance.
+     *
+     * If the this instance collides into the player, the player will
      * loose some scores.
      * @param  {Number} dt - A time delta between ticks
      * @return {undefined}
@@ -261,33 +279,38 @@
             'y': this.y
         });
 
-        // Check to see if the enemy is colliding with the player.
-        // If the game is over, there is no need to check the collision.
+        // Check to see if this instance is colliding into the player.
+        // I check to see if the player is not paused because there is no need
+        // to check the collision if the the game is over.
+        // (Currently, the player becomes paused when the game is over.)
         if (!player.isPaused && this.isColliding(player)) {
             console.log('Collision detected!');
-            // Adding score here means loosing the score.
+            // Adding score in here means loosing this amount from the current
+            // score, since the enemies have negative values in 'SCORE'.
             score.addScore(this.SCORE);
 
-            // IF the score reaches 0, the game is over.
+            // If the score reaches 0, the game is over.
             if (score.getScore() <= 0) {
                 console.log('The game is over');
                 gameOver();
             } else {
                 // Reset the stage
+                // TODO: Refactor this name. This should imply reset the
+                // player's position
                 resetStage();
             }
         }
 
-        // Check to see if the enemy reaches out of the canvas or not.
+        // Check to see if this instance reaches out of the canvas.
         if (this.left > canvasSize.effectiveWidth) {
-            // Reset the position of the enemy by assigning random
+            // Reset the position of this instance by assigning a random
             // position.
             this.setPosition(generateRandomEnemyPosition());
         }
     };
 
     /**
-     * Increases the speed of the enemy. The value in 'speed' will be added
+     * Increases the speed of this instance. The value in 'speed' will be added
      * to the current speed.
      * @param  {Number} speed - Value of the speed to increase.
      * @return {undefined}
@@ -298,13 +321,14 @@
 
     /**
      * Call this function when the game is over.
-     * This function turns on the flags:
+     * This function currently turns on:
      * <ul>
-     * <li>for the player to be moved</li>
-     * <li>for the 'game over' message to show</li>
+     * <li>the flag for the player to be moved</li>
+     * <li>the flag for the 'game over' message to show</li>
      * </ul>
      * @return {undefined}
      */
+    //TODO: move this class to the appropriate place.
     var gameOver = function() {
         player.isPaused = true;
         message.showGameOver();
@@ -315,59 +339,69 @@
     // a handleInput() method.
 
     /**
-     * Player we play.
-     * This class is a subclass of Charactor
+     * Player class. The instance of this class is the player we play.
+     *
+     * This is a subclass of Charactor class.
      * @constructor
-     * @return {undefined}
+     * @return {Player} instance of this class. (with constructor mode)
      */
     var Player = function() {
-        // Initialize the enemy using Superclass's constructor
+        // Initialize this instance using the superclass's constructor
         Charactor.call(this);
 
         /**
-         * Value of one step on the x-axis
+         * Value that represents one step on the x-axis
          * @type {Number}
          */
         this.INCREMENT_VALUE_OF_X = 101;
 
         /**
-         * Value of one step on the y-axis
+         * Value that represents one step on the y-axis
          * @type {Number}
          */
         this.INCREMENT_VALUE_OF_Y = 83;
 
-        // Default sprite image of the player.
+        // Set the default sprite of the player.
         this.setSprite('images/char-boy.png');
 
         /**
-         * Player's initial position.
-         * The numbers 2 and 5 indicate colum num and row num respectively.
+         * Initial position of this instance on x-axis.
+         * The number indicates the colum number of the matrix (game board).
          * The number starts from 0, so 2 will be the 3rd column.
          * @type {[type]}
          */
         this.INITIAL_POSITION_X = this.INCREMENT_VALUE_OF_X * 2;
+
+        /**
+         * Initial position of this instance on y-axis.
+         * The number indicates the row number of the matrix (game board).
+         * The number starts from 0, so 5 will be the 6th column.
+         * @type {[type]}
+         */
         this.INITIAL_POSITION_Y = this.INCREMENT_VALUE_OF_Y * 5;
 
         /**
-         * This value is used to increment the player's position on the x-xis.
+         * This value is used to increment the position of this instance
+         * on the x-xis.
          * When the player's position needs to be updated, for example,
-         * when a key is pressed by the user,
-         * the value for increment/decrement will be stored.
+         * when a arrow key is pressed, the value for increment/decrement
+         * will be stored.
          *
          * This value is associated with yDelta.
          *
-         * The reason for having these properties are to wait
-         * for update() being called so that these values are added to/subtrac
-         * ted from the position of the player correctly.
+         * The reason for having these properties are to wait for this.update()
+         * being called, so that these values are added to/subtracted from
+         * the position of the player correctly.
          * @type {Number}
          */
         this.xDelta = 0;
 
         /**
-         * This value is used to increment the player's position on the y-axis.
-         * When the player's position needs to be updated, for example,
-         * when a key is pressed by the user,
-         * the value for increment/decrement will be stored.
+         * This value is used to increment the position of this instance on the
+         * y-axis. When the player's position needs to be updated, for example,
+         * When the player's position needs to be updated, for example, when a
+         * arrow key is pressed, the value for increment/decrement will be
+         * stored.
          *
          * This value is associated with xDelta.
          *
@@ -379,8 +413,8 @@
         this.yDelta = 0;
 
         /**
-         * Flag that indicates the player can move.
-         * This value will be used to prevent moving the player in situations
+         * Flag that indicates the player is allowed to move.
+         * This value will be used to prevent the player moving, in situations
          * such as when some messages are displayed on the board, or
          * the game has been over.
          * @type {Boolean}
@@ -394,7 +428,7 @@
     Player.prototype.constructor = Player;
 
     /**
-     * Initializes the player.
+     * Initializes this instance.
      * Whatever the initialization functions are defined here
      * @return {undefined}
      */
@@ -407,7 +441,7 @@
     };
 
     /**
-     * Resets the position of the player to the initial postion.
+     * Resets the position of this instance to the initial postion.
      * @return {undefined}
      */
     Player.prototype.resetPosition = function() {
@@ -420,9 +454,15 @@
     };
 
     /**
-     * Updates the player's position, required method for game.
-     * It also resets the delta values.
-     * When the player reaches to the water, the game will be reset.
+     * Updates the properties of this instance.
+     * Currently, this updates:
+     * <ul>
+     * <li>the position of this instance</li>
+     * <li>the delta counter to 0</li>
+     * </ul>
+     *
+     * Also, it checks whether the the player reaches to the water.
+     * If so, the player goest to the next stage.
      * @return {undefined}
      */
     Player.prototype.update = function() {
@@ -437,7 +477,7 @@
         this.resetDelta();
 
         // Check to see if the player reaches the water.
-        // If so, reset the game by moving the player to the initial location.
+        // If so, the player will go to the next stage.
         if (this.hasReachedGoal()) {
             console.log('The player has reached the water!' +
                 'Go to the next stage.');
@@ -446,13 +486,16 @@
     };
 
     /**
-     * Checks if the player reaches the goal (the water areas).
-     * The logic here is the same as detecting collision.
-     * If the player collides into the water area, that means the player reaches
-     * the goal.
+     * Checks if this instance reaches the goal (the water areas).
+     * The logic here is the same as the Entity.prototype.isColliding
+     * (collision detection).
+     *
+     * If this instance collides into the water area, that means the player
+     * reaches the goal.
      * @return {Boolean} True when the player reached the goal.
-     * Otherwise, false.
+     * False, otherwise.
      */
+    //TODO: refactor
     Player.prototype.hasReachedGoal = function() {
         return (
             this.top < waterArea.bottom &&
@@ -463,13 +506,18 @@
     };
 
     /**
-     * Set deltas of x and y. When values are set to this property the position
-     * of the player will be changed acording to this value on the next update().
-     * They will be reset after the update of the position.
-     * Sets the default value of '0' if undefined is passed for the argment.
-     * @param {Number} xDelta - The new delta for x. Sets 0 if undefined is
+     * Set the deltas for the 'x' and 'y'. When these values are set,
+     * the position of the player will be updated in the next update().
+     *
+     * For example, if a negative value is set in xDelta, the player will move
+     * to the left.
+     *
+     * If 'undefined' is passed for the argment, it will sets the
+     * '0' as the default value.
+     *
+     * @param {Number} xDelta - The new delta for 'x'. Sets 0 if undefined is
      * passed.
-     * @param {Number} yDelta - The new delta for y. Sets 0 if undefined is
+     * @param {Number} yDelta - The new delta for 'y'. Sets 0 if undefined is
      * passed.
      * @return {undefined}
      */
@@ -479,8 +527,7 @@
     };
 
     /**
-     * Resets the delta to the initial values by calling setDelta() without
-     * parameters.
+     * Resets the deltas to the initial values.
      * @return {undefined}
      */
     Player.prototype.resetDelta = function() {
@@ -488,44 +535,54 @@
     };
 
     /**
-     * Checks if the player can move to the left/right (on x-axis).
-     * This is similar to Player.canMoveOnY().
+     * Checks if this instance can physically move to the left/right
+     * (on x-axis).
+     *
+     * This checking is the same as what Player.canMoveOnY() does.
+     *
      * It checks the new location by comparing the left and right boundaries of
-     * the field with the new locations, that are calculated by summing the
+     * the board with the new locations, which are calculated by summing the
      * 'step' and the current values of left and right.
-     * If the new value stays within the boundary, it returns true to indicate
-     * the player can move. Otherwise, returns false.
-     * @param  {Number} step - The number of pixels the player moves
-     * @return {Boolean} True if the player's new position stays within the
-     * field boundary. False, otherwise.
+     *
+     * If the new location stays within the boundary, it returns true to
+     * indicate that the player can move. Otherwise, it returns false.
+     * @param  {Number} step - The number of pixels the player wants to move
+     * @return {Boolean} True if the new location stays within the boundary.
+     * False, otherwise.
      */
     Player.prototype.canMoveOnX = function(step) {
+        // '0' means the left boundary of the board.
         return this.left + step >= 0 &&
             this.right + step <= canvasSize.effectiveWidth;
     };
 
     /**
-     * Checks if the player can move to the left/right (on y-axis).
-     * This is similar to Player.canMoveOnX().
+     * Checks if this instance can physically move to the up/down (on y-axis).
+     *
+     * This checking is the same as what Player.canMoveOnX() does.
+     *
      * It checks the new location by comparing the top and bottom boundaries of
-     * the field with the new locations, that are calculated by summing the
+     * the board with the new locations, which are calculated by summing the
      * 'step' and the current values of top and bottom.
-     * If the new value stays within the boundary, it returns true to indicate
-     * the player can move. Otherwise, returns false.
-     * @param  {Number} step - The number of pixels the player moves
-     * @return {Boolean} True if the player's new position stays within the
-     * field boundary. False, otherwise.
+     *
+     * If the new location stays within the boundary, it returns true to
+     * indicate that the player can move. Otherwise, it returns false.
+     * @param  {Number} step - The number of pixels the player wants to move
+     * @return {Boolean} True if the new location stays within the boundary.
+     * False, otherwise.
      */
     Player.prototype.canMoveOnY = function(step) {
+        // '0' means the top boundary of the board.
         return this.top + step >= 0 &&
             this.bottom + step <= canvasSize.effectiveHeight;
     };
 
     /**
-     * Sets delta(next step) values of x and y if the player's new location is
-     * valid.
-     * @param {Number} dtX - A delta value on x-axis.
-     * @param {Number} dtY - A delta value on y-axis.
+     * Sets deltas(next step) values for the 'x' and 'y' if the new location
+     * is valid.
+     *
+     * @param {Number} dtX - A delta for 'x'
+     * @param {Number} dtY - A delta for 'y'
      * @return {undifined}
      */
     Player.prototype.setDeltaOrIgnore = function(dtX, dtY) {
@@ -545,13 +602,16 @@
 
     /**
      * Handles the inputs from the keyboard.
-     * When pressed a key of:
-     *  - 'left': the player moves one step to the west (if possible)
-     *  - 'right': the player moves one step to the east (if possible)
-     *  - 'up': the player moves one step to the north (if possible)
-     *  - 'down': the player moves one step to the south (if possible)
-     * When pressed anything else:
-     *  - Just ignore
+     *
+     * When:
+     *  - 'left': the player moves one step to left (if possible)
+     *  - 'right': the player moves one step to right (if possible)
+     *  - 'up': the player moves one step to up (if possible)
+     *  - 'down': the player moves one step to down (if possible)
+     *
+     * When any other key is passed or when the player is supposed to be paused,
+     * the key will be ignored to prevent the player moving.
+     *
      * @param  {String} key - The string value of the input from keyboard
      * @return {undefined}
      */
@@ -587,18 +647,20 @@
     };
 
     /**
-     * Item class that is a super class of all the items in this gamee, such as
-     *  Heart, and Gems.
-     * This class is also a subclass of Charactor.
+     * Item class. This class is the superclass of all the items in this game.
+     *
+     * This class is also a subclass of Entity class.
+     *
      * @constructor
-     * @param {[type]} position [description]
+     * @return {Item} instance of this class. (with constructor mode)
      */
     var Item = function(position) {
-        // Initialize the enemy using Superclass's constructor
+        // Initialize this instance using the superclass's constructor
         Entity.call(this);
 
         /**
-         * Flag that indicates if this instance is collected by the player.
+         * Flag that indicates if this instance has been collected by the
+         * player.
          * The default value is false (has not collected yet).
          * @type {Boolean}
          */
@@ -619,18 +681,18 @@
     Item.prototype.constructor = Item;
 
     /**
-     * Updates the Item object's properties.
+     * Updates the properties of this intance.
      * Currently, this function updates:
      * <ul>
-     * <li>this.collected with the result from the collision checking
+     * <li>this.collected with the result returned from the collision checking
      *  with the player.</li>
-     * <li>scores of the player</li>
+     * <li>the scores of the player (when this instance has been collected)</li>
      * </ul>
      * @return {undefined}
      */
     Item.prototype.update = function() {
-        // If the 'this' item has been collected, I don't need to
-        // check the collision.
+        // If the 'this' item has been collected, I don't need to check
+        // the collision.
         if (!this.collected && this.isColliding(player)) {
             this.collected = true;
             score.addScore(this.SCORE);
@@ -638,8 +700,7 @@
     };
 
     /**
-     * Renders the Item object on the screen as long as the 'collected' is
-     * false
+     * Renders this instance on the screen as long as the 'collected' is false.
      * @return {undefined}
      */
     Item.prototype.render = function() {
@@ -653,15 +714,18 @@
     };
 
     /**
-     * Heart that the player collects.
-     * This class is a subclass of Item
+     * Heart class. The instances of this class will be the items the player
+     * collects.
+     *
+     * This class is a subclass of Item class.
+     *
      * @constructor
-     * @param {Object} position - Position object that has x and y coordinates.
-     * This will be used for the position of the newly generated heart object
-     * @return {undefined}
+     * @param {Object} position - Object representing its position of the
+     * instance. It must contain 'x' and 'y' properties.
+     * @return {Heart} instance of this class. (with constructor mode)
      */
     var Heart = function(position) {
-        // Initialize the heart using Superclass's constructor
+        // Initialize the heart using the superclass's constructor
         Item.call(this, position);
 
         // Default sprite image of the heart.
@@ -671,55 +735,58 @@
     Heart.prototype.constructor = Heart;
 
     /**
-     * Gem that the player collects.
-     * This class is a subclass of Item
+     * Gem class. The instances of this class will be the items that the player
+     * collects.
+     *
+     * This class is a subclass of Item class.
+     *
      * @constructor
-     * @param {Object} position - Position object that has x and y coordinates.
-     * This will be used for the position of the newly generated object
-     * @return {undefined}
+     * @param {Object} position - Object representing its position of the
+     * instance. It must contain 'x' and 'y' properties.
+     * @return {Gem} instance of this class. (with constructor mode)
      */
     var Gem = function(position) {
-        // Initialize the object using Superclass's constructor
+        // Initialize this instance using the superclass's constructor
         Item.call(this, position);
 
         /**
-         * sprite image URI of a blue gem.
+         * URI of the sprite for a blue gem.
          * @type {String}
          */
         this.SPRITE_BLUE = 'images/Gem Blue.png';
 
         /**
-         * sprite image URI of a green gem.
+         * URI of the sprite for a green gem.
          * @type {String}
          */
         this.SPRITE_GREEN = 'images/Gem Green.png';
 
         /**
-         * sprite image URI of a orange gem.
+         URI of the sprite for a orange gem.
          * @type {String}
          */
         this.SPRITE_ORANGE = 'images/Gem Orange.png';
 
         /**
-         * Constant integer value that indicates Blue Gem.
+         * Integer value that indicates Blue Gem.
          * This is mostly used when choosing color of the gem randomly.
-         * Do not change the value. There is a dependency to the order.
+         * Do not change this. There is a dependency to the order.
          * @type {Number}
          */
         this.BLUE = 0;
 
         /**
-         * Constant integer value that indicates Green Gem.
+         * Integer value that indicates Green Gem.
          * This is mostly used when choosing color of the gem randomly.
-         * Do not change the value. There is a dependency to the order.
+         * Do not change this. There is a dependency to the order.
          * @type {Number}
          */
         this.GREEN = 1;
 
         /**
-         * Constant integer value that indicates Orange Gem.
-         * This is mostly used when choosing color of the gem randomly.
-         * Do not change the value. There is a dependency to the order.
+         * Integer value that indicates Orange Gem.
+         * This is mostly used when randomly choosing color of this instance.
+         * Do not change this. There is a dependency to the order.
          * @type {Number}
          */
         this.ORANGE = 2;
@@ -731,7 +798,7 @@
     Gem.prototype.constructor = Gem;
 
     /**
-     * Selects a color randomly and sets it for the gem.
+     * Selects a color randomly and sets it for this instance.
      * @return {undefined}
      */
     Gem.prototype.changeColorRandomly = function() {
@@ -742,8 +809,9 @@
     };
 
     /**
-     * Sets the color of the gem.
-     * @param {Number} newColor - Integer that represents the color of a gem.
+     * Sets the color of this instance.
+     * @param {Number} newColor - Integer that represents the color of this
+     * instance.
      */
     Gem.prototype.setColor = function(newColor) {
         switch(newColor) {
@@ -757,23 +825,25 @@
                 this.setSprite(this.SPRITE_ORANGE);
             break;
             default:
-                console.log('Unexpected value for the color is selected.' +
+                console.log('Unexpected color value is selected.' +
                     'There is something wrong in Gem.prototype.setColor.');
                 break;
         }
     };
 
     /**
-     * Score class. Actually, I am not sure if the score should be a
-     * class since I need only one instance. However, I think making it
-     * as a class is convinient since it can hold many relating functions like
-     * the other pseudo classical classes do.
+     * Score class.
+     *
+     * Actually, I am not sure if this class should be a class since I need
+     * only one instance. However, I think making it as a class is convinient
+     * and easier to read the source code since I can use this exactly the
+     * same way as I do for the other pseudo classical classes.
      * @constructor
-     * @return {Score} Newly created Score object (with constructor mode)
+     * @return {Score} instance of this class. (with constructor mode)
      */
     var Score = function(defaultScore) {
         /**
-         * The score
+         * The scores
          * @type {Number}
          */
         this.score = 0;
@@ -783,7 +853,7 @@
 
         // Do this after score is set in order to set the initial score
         /**
-         * The highest score that the player has gotten in the game.
+         * The high score that the player has earned in the game.
          * @type {Number}
          */
         this.highScore = this.getScore();
@@ -798,7 +868,7 @@
     };
 
     /**
-     * Sets newScore as the current score.
+     * Sets 'newScore' as the new current score.
      * @param {[type]} newScore [description]
      * @return {undefined}
      */
@@ -807,25 +877,28 @@
     };
 
     /**
-     * Adds scoreEarned to the current score and make the result as
+     * Adds 'scoreEarned' to the current score and make the result as
      * the new current score. When loosing points, the value passed as
-     * the argument is a minus value. So, adding a minus number equals to
-     * subtracting the number.
-     * @param {Number} score - Score to be added
+     * the argument is a negative value.
+     *
+     * After the addition, it checks if the new current score becomes greater
+     * than the current high score. If so, the high score will be the new
+     * score.
+     * @param {Number} score - Score that will be added to the current score
      * @return {undefined}
      */
     Score.prototype.addScore = function(score) {
         this.score += score;
 
-        // Check to see if the score exceeds the current highest score.
+        // Check to see if the score exceeds the current high score.
         if (this.highScore < this.score) {
             this.highScore = this.score;
         }
     };
 
     /**
-     * Renders the score on the board. This function is called from
-     * engine.js.
+     * Renders the score on the board.
+     * This function is called in engine.js.
      * @return {[type]} [description]
      */
     Score.prototype.render = function() {
@@ -841,74 +914,72 @@
         ctx.fillText('Score: ' + this.score, 10, 100);
         ctx.strokeText('Score: ' + this.score, 10, 100);
 
-        // Draw the highest score
-        ctx.fillText('Highest Score: ' + this.highScore, 10, 140);
-        ctx.strokeText('Highest Score: ' + this.highScore, 10, 140);
+        // Draw the high score
+        ctx.fillText('High Score: ' + this.highScore, 10, 140);
+        ctx.strokeText('High Score: ' + this.highScore, 10, 140);
 
-        // Restore the privious setting.
+        // Restore the privious state.
         ctx.restore();
     };
 
     /**
-     * Message class. The parameter to the constructor is the message that will
-     * be displayed on the screen. If you want to remove the message, simply
-     * set the message to an empty string by setMessage().
+     * Message class that controlls the messages on the board, except for the
+     * score.
      *
-     * Actually, I am not sure if the Message should be a
-     * class since I need only one instance. However, I think making it
-     * as a class is convinient since it can hold many relating functions like
-     * the other pseudo classical classes do.
+     * Actually, I am not sure if this class should be a class since I need
+     * only one instance. However, I think making it as a class is convinient
+     * and easier to read the source code since I can use this exactly the
+     * same way as I do for the other pseudo classical classes.
      *
      * @constructor
-     * @return {Message} Newly created Message instance (with constructor mode)
+     * @return {Message} instance of this class. (with constructor mode)
      */
     var Message = function() {
 
         /**
-         * Interger value that indicates there is no message to be shown.
-         * This value will be set to 'showMessage'.
+         * Interger value that indicates there is no message to show.
          * @type {Number}
          */
         this.NO_MESSAGE = 0;
 
         /**
-         * Interger value that indicates the game is over.
-         * This value will be set to 'showMessage'.
+         * Interger value that indicates the message for the game is over needs
+         * to be drawn.
          * @type {Number}
          */
         this.GAME_OVER = 1;
 
         /**
-         * This variable is used like a flag with an integer value that
+         * This variable is used with an integer value that
          * indicates whether the message needs to be shown or not.
-         * For example, 0 indicates there should be no message to display.
-         * 1 is for displaying the messages for 'game over'.
-         * Default is 0 (no message).
+         *
+         * For example, '0' (NO_MESSAGE) indicates there is no message to
+         * display. If set to '1' (GAME_OVER), the messages for 'game over'
+         * need to be displayed.
          * @type {Number}
          */
         this.showMessage = this.NO_MESSAGE;
     };
 
     /**
-     * Call this when the game is over. This function will turn the flag on to
-     * display the messages for 'game over'.
+     * Call this function when the game is over.
+     * This function will turn on the flag to display the messages for
+     * 'game over'.
      * @return {undefined}
      */
+    //TODO: refactor
     Message.prototype.showGameOver = function() {
         this.showMessage = this.GAME_OVER;
     };
 
     /**
-     * Renders the message on the board. This function is called from
-     * engine.js.
+     * Draws the message on the board. This function is called in engine.js.
      * @return {undefined}
      */
     Message.prototype.render = function() {
         var messageTop = '',
             messageBottom = '';
 
-        // If the 'show' flag is true, it means there's some messages I want
-        // to show.
         if (this.showMessage) {
 
             // Save the states before changing them.
@@ -946,7 +1017,7 @@
                 break;
             }
 
-            // Restore the privious setting.
+            // Restore the privious state.
             ctx.restore();
         }
     };
@@ -955,7 +1026,7 @@
      * Returns a random integer between min (included) and max (included)
      * Using Math.round() will give you a non-uniform distribution!
      *
-     * This function was borrowed from the following document.
+     * This function was borrowed from the following document in MDN.
      * I needed to have a function to randomly generates an int number and the
      * sample function in MDN worked well.
      *
@@ -973,7 +1044,7 @@
     /**
      * Generates new enemies. The 'num' number of enemies will be created.
      * @param  {Array} arrayOfEnemies - Array that will store the newly created
-     * enemy objects.
+     * enemy instances.
      * @param  {Number} num - The number of enemies you want to generate.
      * @return {undefined}
      */
@@ -981,7 +1052,6 @@
         var cnt;
 
         for (cnt = 0; cnt < num; cnt++) {
-            // Set the enemy on the first row.
             arrayOfEnemies.push(
                 new Enemy(
                     generateRandomEnemyPosition(),
@@ -992,18 +1062,17 @@
     };
 
     /**
-     * Generates the random position for the enemy, global function.
-     * This 'random' means that choosing the position randomly from
-     * the specific rows since the enemy's y coordinate should be somewhere
-     * on the rows of the field.
-     * I don't change the row number, so that it makes the enemues stay
-     * on the same row.
-     * @return {Object} The new, generated position (with properties of 'x' and
-     * 'y')
+     * Generates the random position for an enemy.
+     *
+     * This 'random' means that the index of the row will be randomly chosen
+     * from a specific range.
+     * I don't want to change the column number, so that the enemies always
+     * run on the same row.
+     * @return {Object} The newly generated position object
      */
     var generateRandomEnemyPosition = function() {
         // Set row number ranging from 1 to 3 because I want the enemies appear
-        // only on the stone fields. (row 1 to 3).
+        // only on the stone areas (row number from 1 to 3).
         return {
             'x': ENEMY_INITIAL_X,
             'y': SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
@@ -1011,8 +1080,8 @@
     };
 
     /**
-     * Generates the possible enemies speed, global function.
-     * The range of the new generated values is from MIN_POSSIBLE_ENEMY_SPEED
+     * Generates the possible speed of an enemy.
+     * The range of the generated values is from MIN_POSSIBLE_ENEMY_SPEED
      * and MAX_POSSIBLE_ENEMY_SPEED inclusive.
      * @return {Number} - The new speed for an enemy.
      */
@@ -1022,14 +1091,17 @@
     };
 
     /**
-     * Generates the item's postion randomly.
-     * @return {Ojbect} - Object that has x and y properties for its position.
+     * Generates the postion of an item, randomly.
+     *
+     * This 'random' means that the index of the row will be randomly chosen
+     * from a specific range.
+     *
+     * @return {Ojbect} - The newly generated position object
      */
     var generateRandomItemPosition = function() {
         // Set a row number ranging from 1 to 3 because I want the items to
-        // appear only on the stone fields. (row 1 to 3).
-        // The same thought is applied to the column, 'x', I want the item to
-        // appear on somewhere between row 0 to 4.
+        // appear only on the stone areas (row number from 1 to 3).
+        // The same thought can be applied for 'x'.
         return {
             'x': SPRITE_WIDTH * getRandomIntInclusive(0, 4),
             'y': SPRITE_HEIGHT * getRandomIntInclusive(1, 3)
@@ -1037,7 +1109,7 @@
     };
 
     /**
-     * Generates the item's position only if the position is vacant.
+     * Generates a position only if the position is vacant.
      * This vacancy will be determined by the position objects in
      * 'arrayOfItemPositions' array.
      * @param  {Array} arrayOfItemPositions - Array that contains the position
@@ -1057,20 +1129,22 @@
             newItemPosition = generateRandomItemPosition();
 
             if (checkIfExists(arrayOfItemPositions, newItemPosition)) {
+                // The position has been taken.
                 needToRegenerate = true;
             } else {
+                // The position is vacant.
                 needToRegenerate = false;
             }
 
-        // Repeat this loop until needToRegenerate becomes false
+        // Repeat this loop until 'needToRegenerate' becomes false
         } while (needToRegenerate);
 
         return newItemPosition;
     };
 
     /**
-     * Generates Items that will be used in the game.
-     * Currently, this creates item objects of:
+     * Generates item instances.
+     * Currently, this creates the following items:
      * <ul>
      * <li>Hearts</li>
      * <li>Gems</li>
@@ -1083,14 +1157,14 @@
         // Delete all of the objects stored in the arrays before adding the
         // new ones.
         //
-        // In order for this deletion, I reset all the hearts and gems by
-        // inserting 0 to the length of the 'allItem' array. The reason for this
-        // is that replacing the pointer to the array does not work
-        // since it is assigned in the property of the global object.
+        // In order for this deletion, I set 0 to the length of the 'allItem'
+        // array. The reason for this is that merely replacing the pointer to
+        // the array does not work since it is assigned in the property of the
+        // global object.
         //
         // I searched for a way to delete all the elements in an array and
         // found the solusion at stackoverflow by assinging 0 to the length of
-        // the array (the 2nd method).
+        // the array (the 2nd method in the post).
         // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
         // javascript
         allItems.length = 0;
@@ -1098,20 +1172,19 @@
         createItems(allItems, occupiedPositions, NUM_GEMS, Heart);
         createItems(allItems, occupiedPositions, NUM_GEMS, Gem);
 
-        // Sort the items in 'allItems' for drawing items.
+        // Sort the items in 'allItems' to drawing items correctly.
         //
         // I think I need this sort in order to draw item objects correctly.
-        // In engine.js, render() for items are called in the order that the
-        // item is stored (because the allItems is an Array and they are
-        // retrieved by forEach()). Therefore, it is possible that the item
-        // that has larger index is drawn underneath the item that has smaller
-        // index. When this case hapens, it does not look good.
+        // In engine.js, I call render() for items in the order that the
+        // item is stored by forEach(). Therefore, it is possible that the item
+        // that has a larger index gets drawn underneath the item that has a
+        // smaller index. When this hapens, it does not look good.
         // (I am grasping the game board as a matrix. Images that are
         // drawn bigger number on x and y coordinates have larger indexes.)
         //
-        // Hence, I sort the items in the order that greater y-coordinates
-        // has the greater indexes. I ignore x-coordinates because I don't think
-        // it matters in terms of the problem that I am mentioning.
+        // Hence, I sort the items to make ones that have greater y-coordinates
+        // will have the greater indexes. I ignore x-coordinates because I
+        // don't think it matters in terms of the problem that I am mentioning.
         //
         // For the Array.prototype.sort(), I read the following manual in MDN.
         // // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Glo
@@ -1122,25 +1195,22 @@
     };
 
     /**
-     * Creates Item objects of Klass (constructor) referes to. Since all of the
-     * classes that are the derived from the Item class have the same data
-     * structure, passing the constructor of the class I want to create works
-     * well.
+     * Creates the item objects using Klass (constructor). Since all of the
+     * classes are the derived from Item class, passing the constructor of the
+     * class I want to create works well.
      *
-     * Each items that are created will have the different position by looking
-     * at the position objects in 'arrayOfOccupiedPos' array.
-     *
-     * The new position will be created only if the position is vacant.
+     * Each items will have the different position by checking the positions of
+     * the existing instances, which are stored in 'arrayOfOccupiedPos' array.
      *
      * If no objects in 'arrayOfOccupiedPos' array have the same position
      * with the newly generated position, 'newItemPosition', the position
-     * will be the position of the new objects.
+     * will be the position of the new instances.
      *
-     * The objects in 'arrayOfOccupiedPos' array will be updated with all of
-     * the newly created position objects.
+     * After the function call, the item isntances in 'arrayOfOccupiedPos'
+     * will be updated with the newly created position objects.
      *
-     * @param {Array} newItemsArray - Array that will be used to store the newly
-     * generated objects.
+     * @param {Array} newItemsArray - Array that will store the newly generated
+     * instances.
      * @param {Array} arrayOfOccupiedPositions - Array that contains the
      * position objects which indicate the positions that have been taken.
      * The objects in this array will be updated with all of the newly
@@ -1164,20 +1234,20 @@
     };
 
     /**
-     * Checks if the items in itemArray has the same posiotion(x and y)
-     * with the itemInQuestion.
-     * Each object stored in itemArray is assumed that it has already existed
-     * (created) and have x and y properties for its position.
+     * Checks if the items in 'itemArray' has the same posiotion(x and y)
+     * with 'itemInQuestion'.
+     * Each object stored in 'itemArray' is assumed that it has already existed
+     * (created) and has 'x' and 'y' properties.
      * @param  {Array} itemArray - Array that stores the existing items.
-     * @param  {Object} itemInQuestion - Item being checked
-     * @return {Boolean} True if the posion of the itemInQuestion matches the
-     * position of any items stored in itemArray. False, otherwise.
+     * @param  {Object} itemInQuestion - Item to be checked
+     * @return {Boolean} True if the posion of 'itemInQuestion' matches the
+     * position of any items stored in 'itemArray'. False, otherwise.
      */
     var checkIfExists = function(itemArray, itemInQuestion) {
         var cnt,
             itemExists;
 
-        // If any item is found on the same position,
+        // If any item that has the same position is found,
         // stop checking and return true.
         for (cnt = 0; cnt < itemArray.length; cnt++) {
             itemExists = itemArray[cnt];
@@ -1204,7 +1274,7 @@
     };
 
     /**
-     * Resets the positions of all of the enemies.
+     * Resets the positions of all the enemies.
      * @return {undefined}
      */
     var resetEnemiesPositions = function() {
@@ -1216,7 +1286,7 @@
     };
 
     /**
-     * Increases the speeds of all the existing ememies.
+     * Increases the speeds of all the ememies.
      * @param  {Number} speed - The value that will be added to the current
      * enemies' speeds.
      * @return {undefined}
@@ -1228,12 +1298,12 @@
     };
 
     /**
-     * Called when you need to go to the next stage.
+     * Call this function when you need to go to the next stage.
      * Currently, it does:
      * <ul>
-     * <li>Increasing the speeds of the enemies</li>
-     * <li>Resetting the player's position</li>
-     * <li>Regenerating the hearts</li>
+     * <li>Increases the speeds of the enemies</li>
+     * <li>Resets the player's position</li>
+     * <li>Regenerates the all the items</li>
      * </ul>
      * @return {undefined}
      */
@@ -1276,60 +1346,61 @@
         SPRITE_TOP_PADDING = 30,
         /**
          * Minimum possible speed of the enemy. Since the speed are selected
-         * randomly, this value is used for the slowest value in the range.
+         * randomly, this value is used as the slowest.
          * @type {Number}
          */
         MIN_POSSIBLE_ENEMY_SPEED = 50,
         /**
          * Maximum possible speed of the enemy. Since the speed are selected
-         * randomly, this value is used for the fastest value in the range
-         * as the initial value.
+         * randomly, this value is used as the fastest initially.
          * @type {Number}
          */
         MAX_POSSIBLE_ENEMY_SPEED = 200,
         /**
-         * Speed that will be added to increase the speed of the enemies.
+         * Speed that will be added to increase the speed of a enemy.
          * @type {Number}
          */
         ADDITIONAL_ENEMY_SPEED = 50,
         /**
-         * Array that stores the Enemy objects.
+         * Array that stores Enemy instances..
          * @type {Array}
          */
         allEnemies = [],
         /**
-         * Player object
+         * Player instance.
          * @type {Player}
          */
         player = new Player(),
         /**
-         * Default position of the enemy on x-axis. Since the enemy comes in
-         * from the left side of the game board, the value is a negative value.
+         * Default position of enemies on x-axis. Since the enemy comes in
+         * from the left of the game board, the value must be a negative value.
          * @type {Number}
          */
         ENEMY_INITIAL_X = -200,
         /**
-         * Array that holds all the items, such as Gems, Hearts, in the game
+         * Array that stores all the items, such as Gems, Hearts.
          * @type {Array}
          */
         allItems = [],
         /**
-         * Number of Hearts
+         * Number of Hearts instances that will be created.
          * @type {Number}
          */
         NUM_HEARTS = 2,
         /**
-         * Number of Gems
+         * Number of Gems instances that will be created.
          * @type {Number}
          */
         NUM_GEMS = 2,
         /**
-         * Score object that holds the score of the entire game.
+         * Score instance that holds the score of the entire game.
+         * Only one instance of this should be created.
          * @type {Score}
          */
         score = new Score(10),
         /**
-         * Message object. Only one instance of this should be created.
+         * Message instance.
+         * Only one instance of this should be created.
          * @type {Message}
          */
         message = new Message();
@@ -1353,11 +1424,18 @@
         player.handleInput(allowedKeys[e.keyCode]);
     });
 
-    // Store these properties to the global object.
-    // Since engine.js refers to these objects.
-    // I put the entire code in this file into an anonymous function
-    // with the global object as the parameter, so that I need to think only
-    // about this js file to run in the 'strict mode'.
+    // Store these properties to the global object to make them accessible from
+    // engine.js.
+    //
+    // I decided to put the entire code in this file into an anonymous function
+    // to run all the code in 'strict mode'. I did not want to repeat inserting
+    // the 'use strict' for all methods.
+    //
+    // As a result of this, I need to make them accessible in order to refer
+    // them from engine.js. So, I set them into 'global' object, the parameter
+    // of the big anonymous function.
+    //
+    // In addtion, I don't need to worry about tainting the global object.
     global.allEnemies = allEnemies;
     global.player = player;
     global.allItems = allItems;
