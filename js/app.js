@@ -3,28 +3,42 @@
  * the relationships between them.
  *
  * <Class Relationship>
- * <Charactor>
- *      |
- *      ----------------
- *      |       |       |
- *   <Enemy> <Player> <Item>
- *                      |
- *                      ---------
- *                      |        |
- *                     <Heart> <Gem>
+ * <Entity>
+ *    |
+ *    ---------------------
+ *    |                   |
+ * <Charactor>          <Item>
+ *      |                 |
+ *      ---------         ---------
+ *      |       |         |       |
+ *   <Enemy> <Player>  <Heart>  <Gem>
  *
- * Charactor: Superclass of other classes
+ *
+ * Entity: Superclass of Charactor and Item classes. This class contains common
+ *         properties and methods to be used as entity in this game.
+ *    - methods: setSprite(), setPosition(), isColliding()
+ *
+ * Charactor: Subclass of Entity class, and also a superclass of Enemy and
+ *            Player classes.
+ *    - methods: render()
  * Enemy: Subclass of Charactor class. The instances of this class represent
  *        the enemies on the board.
+ *    - methods: getSpeed(), setSpeed(), update(), increaseSpeed()
  * Player: Subclass of Charactor class. The instance of this class represents
  *        the player. Only one instance shoulud be created in the entire game.
- * Item: Subclass of Charactor class. The instances of this class represent
+ *    - methods: init(), resetPosition(), update(), hasReachedGoal(),
+ *               setDelta(), resetDelta(), canMoveOnX(), canMoveOnY(),
+ *               setDeltaOrIgnore(), handleInput()
+ *
+ * Item: Subclass of Entity class. The instances of this class represent
  *       the items to be collected by the player.
+ *    - methods: update(), render()
  * Heart: Subclass of Item class. The instances of this class represent the
  *       Heart-shaped objects the player collects.
+ *    - methods: <none>
  * Gem: Subclass of Item class. The instances of this class represent the
  *       Gem-shaped objects the player collects.
- *
+ *    - methods: changeColorRandomly(), setColor()
  */
 
 (function(global) {
@@ -32,12 +46,11 @@
     'use strict';
 
     /**
-     * Creates a new charactor.
-     * This class is also a superclass of Enemy and Player classes
-     * @constructor
-     * @return {undefined}
+     * This class is the superclass of Charactor and Item classes.
+     * This class contains the common properties and methods to be used as
+     * an entity in this game
      */
-    var Charactor = function() {
+    var Entity = function() {
         /**
          * Position of the enemy on the x-axis.
          * @type {Number}
@@ -88,21 +101,21 @@
     };
 
     /**
-     * Sets the sprite of the charactor, shared method
-     * @param {String} sprite - The uri of the sprite with in relative format
+     * Sets the sprite of the instance
+     * @param {String} sprite - The uri of the sprite in relative path format
      * @return {undefined}
      */
-    Charactor.prototype.setSprite = function(sprite) {
+    Entity.prototype.setSprite = function(sprite) {
         this.sprite = sprite;
     };
 
     /**
-     * Sets the position of the charactor, shared method
-     * @param {Object} position - The object representing the position
-     * of the charactor. It must contain 'x' and 'y' properties
+     * Sets the position of the instance
+     * @param {Object} position - Object representing its position of the
+     * instance. It must contain 'x' and 'y' properties
      * @return {undefined}
      */
-    Charactor.prototype.setPosition = function(position) {
+    Entity.prototype.setPosition = function(position) {
         this.x = position.x;
         this.y = position.y;
 
@@ -115,19 +128,11 @@
     };
 
     /**
-     * Renders the charactor on the screen, required method for game, shared
-     * method.
-     * @return {undefined}
-     */
-    Charactor.prototype.render = function() {
-        ctx.drawImage(
-            Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_PADDING);
-    };
-
-    /**
-     * Checks if the 'this'(Charactor object) is colliding into the
-     * objInQuestion. This function is used in the subclass of Charactor class.
-     * For example, it checks if the enemy is colliding into the player.
+     * Checks if the 'this' instance is colliding into the parameter,
+     * 'objInQuestion'.
+     *
+     * For example, it checks if the enemy is colliding into the player. In this
+     * case, the argument will be the player object.
      *
      * I was looking for a way to detect collisions, and found this post below.
      * https://discussions.udacity.com/t/player-bug-collision-problem/15068/4?u=
@@ -137,14 +142,16 @@
      * HTML5 Game Development - Physics - AABB Collision
      * https://www.udacity.com/course/viewer#!/c-cs255/l-52265917/e-130215280/m-
      * 129941633
+     *
      * @param  {Object} objInQuestion - The object being checked for collision.
-     * Currently, this object is assumed that it has 'bottom', 'right', 'top',
+     * Currently, this object is assumed to have 'bottom', 'right', 'top',
      * 'left' properties that represent the x and y coordinates of the imaginary
      * box for the object.
-     * @return {Boolean} True if the 'this' (charactor object) is colliding into
-     * 'objInQuestion'.
+     * @return {Boolean} True if the 'this' instance is colliding into
+     * 'objInQuestion'. False, otherwise.
      */
-    Charactor.prototype.isColliding = function(objInQuestion) {
+    Entity.prototype.isColliding = function(objInQuestion) {
+        //TODO: objInQuestion is supposed to be used, but it is not.
         //TODO: check the type of 'objInQuestion' to ensure it has the bottom,
         //right, top, and left properties.
         return (
@@ -153,6 +160,29 @@
             this.bottom > player.top &&
             this.right > player.left
         );
+    };
+
+    /**
+     * Creates a new charactor.
+     * This class is also a superclass of Enemy and Player classes
+     * @constructor
+     * @return {undefined}
+     */
+    var Charactor = function() {
+        // Initialize this instance using Superclass's constructor
+        Entity.call(this);
+    };
+    Charactor.prototype = Object.create(Entity.prototype);
+    Charactor.prototype.constructor = Charactor;
+
+    /**
+     * Renders the charactor on the screen, required method for game, shared
+     * method.
+     * @return {undefined}
+     */
+    Charactor.prototype.render = function() {
+        ctx.drawImage(
+            Resources.get(this.sprite), this.x, this.y - SPRITE_TOP_PADDING);
     };
 
     /**
@@ -565,7 +595,7 @@
      */
     var Item = function(position) {
         // Initialize the enemy using Superclass's constructor
-        Charactor.call(this);
+        Entity.call(this);
 
         /**
          * Flag that indicates if this instance is collected by the player.
@@ -585,7 +615,7 @@
         // Set the initial position.
         this.setPosition(position);
     };
-    Item.prototype = Object.create(Charactor.prototype);
+    Item.prototype = Object.create(Entity.prototype);
     Item.prototype.constructor = Item;
 
     /**
@@ -610,7 +640,6 @@
     /**
      * Renders the Item object on the screen as long as the 'collected' is
      * false
-     * @override
      * @return {undefined}
      */
     Item.prototype.render = function() {
