@@ -98,6 +98,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
+
+        selector.update();
+
         player.update();
 
         // update() of 'item's need to be called after the player's update(),
@@ -146,6 +149,7 @@ var Engine = (function(global) {
             }
         }
 
+        selector.render();
 
         renderEntities();
     }
@@ -195,11 +199,16 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
         'images/Heart.png',
         'images/Gem Blue.png',
         'images/Gem Green.png',
         'images/Gem Orange.png',
         'images/Key.png',
+        'images/Selector.png',
         'images/Star.png'
     ]);
     Resources.onReady(init);
@@ -229,4 +238,7 @@ var Engine = (function(global) {
         'left': 0,
         'right': global.canvasSize.effectiveWidth
     };
+
+    global.IMAGE_HEIGHT = IMAGE_HEIGHT;
+    global.IMAGE_WIDTH = IMAGE_WIDTH;
 })(this);

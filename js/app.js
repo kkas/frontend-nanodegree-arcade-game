@@ -30,7 +30,7 @@
  *        the player. Only one instance should be created in the entire game.
  *    - methods: resetPosition(), update(), hasReachedGoal(), setDelta(),
  *               resetDelta(), canMoveOnX(), canMoveOnY(), setDeltaOrIgnore(),
- *               handleInput()
+ *               handleInput(), changePlayer()
  *
  * Item: Subclass of Entity class. The instances of this class represent
  *       the items the player collects.
@@ -55,6 +55,10 @@
  *          game. Only one instance of this class should be create in the
  *          entire game.
  *    - methods: showGameOver, render()
+ * Selector: The instance of this class controls the selection of the charactor.
+ *           Only one instance of this class should be crated in the entire
+ *           game.
+ *    - methods: next(), update(), render(), handleInput()
  */
 
 (function(global) {
@@ -360,10 +364,10 @@
         /**
          * Initial position of this instance on y-axis.
          * The number indicates the row number of the matrix (game board).
-         * The number starts from 0, so 5 will be the 6th column.
+         * The number starts from 0, so 4 will be the 5th column.
          * @type {[type]}
          */
-        this.INITIAL_POSITION_Y = this.INCREMENT_VALUE_OF_Y * 5;
+        this.INITIAL_POSITION_Y = this.INCREMENT_VALUE_OF_Y * 4;
 
         /**
          * This value is used to increment the position of this instance
@@ -537,8 +541,10 @@
      */
     Player.prototype.canMoveOnY = function(step) {
         // '0' means the top boundary of the board.
+        // The bottom most areas are taken for the selector, so I subtract
+        // one IMAGE_HEIGHT from the 'effectiveHeight'.
         return this.top + step >= 0 &&
-            this.bottom + step <= canvasSize.effectiveHeight;
+            this.bottom + step <= canvasSize.effectiveHeight - IMAGE_HEIGHT;
     };
 
     /**
@@ -608,6 +614,15 @@
         if (!this.isPaused) {
             this.setDeltaOrIgnore(stepX, stepY);
         }
+    };
+
+    /**
+     * Changes the player (only the sprite)
+     * @param  {String} newSprite - The new sprite of the player
+     * @return {undefined}
+     */
+    Player.prototype.changePlayer = function(newSprite) {
+        this.setSprite(newSprite);
     };
 
     /**
@@ -1060,6 +1075,112 @@
     };
 
     /**
+     * Selector class that controlls the selection of the charactor. This class
+     * holds the current selected charactor, and renders the list of charactors
+     * with the selector highlighting the current selected charactor.
+     *
+     * Actually, I am not sure if this class should be a class since I need
+     * only one instance. However, I think making it as a class is convinient
+     * and easier to read the source code since I can use this exactly the
+     * same way as I do for the other pseudo classical classes.
+     *
+     * @constructor
+     * @return {Message} instance of this class. (with constructor mode)
+     */
+    var Selector = function() {
+        /**
+         * The array that contains the URI of the sprites of all the charactors
+         * that the player can select.
+         * @type {Array}
+         */
+        this.charactorImages = [
+            'images/char-boy.png',
+            'images/char-cat-girl.png',
+            'images/char-horn-girl.png',
+            'images/char-pink-girl.png',
+            'images/char-princess-girl.png'
+        ];
+
+        /**
+         * The URI of the sprite image of the selector, that indicates which
+         * charactor is currently selected.
+         * @type {String}
+         */
+        this.selectorImage = 'images/Selector.png';
+
+        /**
+         * The index of currently selected charactor.
+         * @type {Number}
+         */
+        this.curSelect = 0;
+
+        /**
+         * Number of characters The player can select.
+         * @type {[type]}
+         */
+        this.NUM_CHARACTORS = this.charactorImages.length;
+    };
+
+    /**
+     * Moves the selector to the next charactor. If the charactor selecting
+     * is on the right most one, then the next will be the left most one.
+     * @return {Number} The new index of currently selected charactor.
+     */
+    Selector.prototype.next = function() {
+        this.curSelect =
+            this.curSelect < this.NUM_CHARACTORS - 1 ? this.curSelect + 1 : 0;
+        return this.curSelect;
+    };
+
+    /**
+     * Updates the selector and its associated properties.
+     * Currently, it changes the player's sprite.
+     * @return {undefined}
+     */
+    Selector.prototype.update = function() {
+        player.changePlayer(this.charactorImages[this.curSelect]);
+    };
+
+    /**
+     * Renders the selector and all the charactors on the board.
+     * @return {undefined}
+     */
+    Selector.prototype.render = function() {
+
+        var i;
+
+        // Draws the selector.
+        ctx.drawImage(Resources.get(this.selectorImage),
+            this.curSelect * IMAGE_WIDTH, 5 * IMAGE_HEIGHT);
+
+        // Draws all the charactors. Drawing charactors after the selector
+        // makes the drawing better.
+        for (i = 0; i < this.charactorImages.length; i++) {
+            ctx.drawImage(Resources.get(this.charactorImages[i]),
+                i * IMAGE_WIDTH, 5 * IMAGE_HEIGHT - 10);
+        }
+    };
+
+    /**
+     * Handles the input from the keyboard. This function handles the keys
+     * that affect the charactor selection.
+     * @param  {String} key - The string value of the input from the keyboard
+     * @return {undefined}
+     */
+    Selector.prototype.handleInput = function(key) {
+
+        switch(key) {
+            case 'space':
+                console.log('Space input.');
+                this.next();
+                break;
+
+            default:
+                break;
+        }
+    };
+
+    /**
      * Returns a random integer between min (included) and max (included)
      * Using Math.round() will give you a non-uniform distribution!
      *
@@ -1471,7 +1592,13 @@
          * Only one instance of this should be created.
          * @type {Message}
          */
-        message = new Message();
+        message = new Message(),
+        /**
+         * Selector instance.
+         * Only one instance of this should be created.
+         * @type {Selector}
+         */
+        selector = new Selector();
 
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
@@ -1482,14 +1609,32 @@
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
     document.addEventListener('keyup', function(e) {
+        // I searched on the internet and found the website below that lists
+        // the integer value of each keyboard input.
+        // http://unixpapa.com/js/key.html
         var allowedKeys = {
+            32: 'space',
             37: 'left',
             38: 'up',
             39: 'right',
             40: 'down'
         };
 
-        player.handleInput(allowedKeys[e.keyCode]);
+        switch (e.keyCode) {
+            case 37:
+            case 38:
+            case 39:
+            case 40:
+                player.handleInput(allowedKeys[e.keyCode]);
+                break;
+            case 32:
+                selector.handleInput(allowedKeys[e.keyCode]);
+                break;
+            default:
+                console.log('unsupported key is entered and will be ignored.',
+                    'keyCode: ', e.keyCode);
+                break;
+        }
     });
 
     // Store these properties to the global object to make them accessible from
@@ -1509,4 +1654,5 @@
     global.allItems = allItems;
     global.score = score;
     global.message = message;
+    global.selector = selector;
 })(this);
