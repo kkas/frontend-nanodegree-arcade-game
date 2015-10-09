@@ -16,8 +16,9 @@
  * * <<other classes>>
  *   <Score>, <Message>, <Selector>
  *
- * Entity: Superclass of Charactor and Item classes. This class contains common
- *         properties and methods to be used as entity in this game.
+ * Entity: Superclass of Charactor, Item, and Obstacle classes.
+ *         This class contains common properties and methods to be used
+ *         as entity in this game.
  *    - methods: setSprite(), setPosition(), isColliding()
  *
  * Charactor: Subclass of Entity class, and also a superclass of Enemy and
@@ -74,7 +75,7 @@
     'use strict';
 
     /**
-     * This class is the superclass of Charactor and Item classes.
+     * This class is the superclass of Charactor, Item, and Obstacle classes.
      * This class contains the common properties and methods to be used as
      * an entity in this game
      * @constructor
@@ -826,6 +827,7 @@
      * Sets the color of this instance.
      * @param {Number} newColor - Integer that represents the color of this
      * instance.
+     * @return {undefined}
      */
     Gem.prototype.setColor = function(newColor) {
         switch(newColor) {
@@ -893,14 +895,14 @@
     Star.prototype = Object.create(Item.prototype);
     Star.prototype.constructor = Star;
 
-    //TODO: add comment
     /**
-     * Item class. This class is the superclass of all the items in this game.
+     * Obstacle class. This class is the superclass of all the obstacles
+     * in this game.
      *
      * This class is also a subclass of Entity class.
      *
      * @constructor
-     * @return {Item} instance of this class. (with constructor mode)
+     * @return {Obstacle} instance of this class. (with constructor mode)
      */
     var Obstacle = function(position) {
         // Initialize this instance using the superclass's constructor
@@ -912,21 +914,13 @@
     Obstacle.prototype = Object.create(Entity.prototype);
     Obstacle.prototype.constructor = Obstacle;
 
-    //TODO: add comment
     /**
      * Updates the properties of this intance.
-     * Currently, this function updates:
-     * <ul>
-     * <li>this.collected with the result returned from the collision checking
-     *  with the player.</li>
-     * <li>the scores of the player (when this instance has been collected)</li>
-     * </ul>
+     * Currently do anything. I created this function to avoid being error.
      * @return {undefined}
      */
     Obstacle.prototype.update = function() {
-        // if (this.isColliding(player)) {
-
-        // }
+        // do nothing.
     };
 
     /**
@@ -940,14 +934,11 @@
             this.y - SPRITE_TOP_PADDING);
     };
 
-     //TODO: add comment
     /**
-     * Item class. This class is the superclass of all the items in this game.
-     *
-     * This class is also a subclass of Entity class.
+     * Rock class. This class is a subclass of Obstacle class.
      *
      * @constructor
-     * @return {Item} instance of this class. (with constructor mode)
+     * @return {Rock} instance of this class. (with constructor mode)
      */
     var Rock = function(position) {
         // Initialize this instance using the superclass's constructor
@@ -1030,7 +1021,7 @@
     /**
      * Renders the score on the board.
      * This function is called in engine.js.
-     * @return {[type]} [description]
+     * @return {undefined}
      */
     Score.prototype.render = function() {
         // Save the states before changing them.
@@ -1186,7 +1177,7 @@
      * same way as I do for the other pseudo classical classes.
      *
      * @constructor
-     * @return {Message} instance of this class. (with constructor mode)
+     * @return {Selector} instance of this class. (with constructor mode)
      */
     var Selector = function() {
         /**
@@ -1364,15 +1355,15 @@
     };
 
     /**
-     * Generates the postion of an item, randomly.
+     * Generates the postion randomly.
      *
      * This 'random' means that the index of the row will be randomly chosen
      * from a specific range.
      *
      * @return {Ojbect} - The newly generated position object
      */
-    var generateRandomItemPosition = function() {
-        // Set a row number ranging from 1 to 3 because I want the items to
+    var generateRandomPosition = function() {
+        // Set a row number ranging from 1 to 3 because I want the instances to
         // appear only on the stone areas (row number from 1 to 3).
         // The same thought can be applied for 'x'.
         return {
@@ -1384,24 +1375,24 @@
     /**
      * Generates a position only if the position is vacant.
      * This vacancy will be determined by the position objects in
-     * 'arrayOfItemPositions' array.
-     * @param  {Array} arrayOfItemPositions - Array that contains the position
+     * 'arrayOfPositions' array.
+     * @param  {Array} arrayOfPositions - Array that contains the position
      * objects to indicate the positions have already been taken.
      * @return {Object} New postion object
      */
-    var generateEffectiveRandomPosition = function(arrayOfItemPositions) {
-        var newItemPosition,
+    var generateEffectiveRandomPosition = function(arrayOfPositions) {
+        var newPosition,
             needToRegenerate;
 
-        // For items, I don't want more than one item to be shown at the
+        // I don't want more than one item or obstacle to be shown at the
         // same position. Therefore, I checked the newly generated position
-        // with the ones that have already generated. If it has the same
+        // with the ones that have already generated. If they have the same
         // position, the position will be re-generate until it has the
         // different position.
         do {
-            newItemPosition = generateRandomItemPosition();
+            newPosition = generateRandomPosition();
 
-            if (checkIfExists(arrayOfItemPositions, newItemPosition)) {
+            if (checkIfExists(arrayOfPositions, newPosition)) {
                 // The position has been taken.
                 needToRegenerate = true;
             } else {
@@ -1412,18 +1403,25 @@
         // Repeat this loop until 'needToRegenerate' becomes false
         } while (needToRegenerate);
 
-        return newItemPosition;
+        return newPosition;
     };
 
-    //TODO: mod this comment
     /**
-     * Generates item instances.
-     * Currently, this creates the following items:
+     * Generates item and obstacles instances.
+     * Currently, this creates the following:
      * <ul>
-     * <li>Hearts</li>
-     * <li>Gems</li>
-     * <li>Keys</li>
+     * <li>items of Heart</li>
+     * <li>items of Gem</li>
+     * <li>items of Key</li>
+     * <li>obstacles of Rock</li>
      * </ul>
+     *
+     * This function will store these instacens after generating them into the
+     * 'allItemsObstacles' array, and sort them by their positions.
+     *
+     * If one has a smaller y-coordinate, it will have a smaller index of the
+     * array. This sorting is necessary to show these objects on the board
+     * correctly. (The ones that has larger indexes will be drawn later.)
      * @return {undefined}
      */
     var generateItemsObstacles = function() {
@@ -1440,10 +1438,10 @@
         // Delete all of the objects stored in the arrays before adding the
         // new ones.
         //
-        // In order for this deletion, I set 0 to the length of the 'allItem'
-        // array. The reason for this is that merely replacing the pointer to
-        // the array does not work since it is assigned in the property of the
-        // global object.
+        // In order for this deletion, I set 0 to the length of the
+        // 'allItemsObstacles' array. The reason for this is that merely
+        // replacing the pointer to the array does not work since it is
+        // assigned in the property of the global object.
         //
         // I searched for a way to delete all the elements in an array and
         // found the solusion at stackoverflow by assinging 0 to the length of
@@ -1452,34 +1450,43 @@
         // javascript
         allItemsObstacles.length = 0;
 
-        createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_HEARTS, Heart);
-        createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_GEMS, Gem);
+        createItemsObstacles(allItemsObstacles, occupiedPositions,
+            NUM_HEARTS, Heart);
+        createItemsObstacles(allItemsObstacles, occupiedPositions,
+            NUM_GEMS, Gem);
 
         // Generate the key only this flag is true.
         if (generateKeyThisTime) {
-            createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_KEYS, Key);
+            createItemsObstacles(allItemsObstacles, occupiedPositions,
+                NUM_KEYS, Key);
         }
 
         // Generate the star only this flag is true.
         if (generateStarThisTime) {
-            createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_STARS, Star);
+            createItemsObstacles(allItemsObstacles, occupiedPositions,
+                NUM_STARS, Star);
         }
 
-        createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_ROCKS, Rock);
+        // Create Rock instances.
+        createItemsObstacles(allItemsObstacles, occupiedPositions,
+            NUM_ROCKS, Rock);
 
-        // Sort the items in 'allItemsObstacles' to drawing items correctly.
+        // Sort the objects in 'allItemsObstacles' to drawing items correctly.
         //
-        // I think I need this sort in order to draw item objects correctly.
-        // In engine.js, I call render() for items in the order that the
-        // item is stored by forEach(). Therefore, it is possible that the item
-        // that has a larger index gets drawn underneath the item that has a
-        // smaller index. When this hapens, it does not look good.
+        // I think I need this sorting in order to draw item and obstacle
+        // instances correctly.
+        // In engine.js, I call render() for each objects in this array,
+        // in the order that they are stored (using forEach()).
+        // Therefore, it is possible that the one that has a larger index
+        // gets drawn underneath the one that has a smaller index.
+        // When this hapens, the game does not look good anymore.
         // (I am grasping the game board as a matrix. Images that are
         // drawn bigger number on x and y coordinates have larger indexes.)
         //
-        // Hence, I sort the items to make ones that have greater y-coordinates
-        // will have the greater indexes. I ignore x-coordinates because I
-        // don't think it matters in terms of the problem that I am mentioning.
+        // Hence, I sort the objects in this array to make ones that have
+        // greater y-coordinates will have the greater indexes.
+        // I ignore x-coordinates because I don't think it matters
+        // in terms of the problem that I am mentioning.
         //
         // For the Array.prototype.sort(), I read the following manual in MDN.
         // // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Glo
@@ -1489,67 +1496,64 @@
         });
     };
 
-    //TODO: mod comment
     /**
-     * Creates the item objects using Klass (constructor). Since all of the
-     * classes are the derived from Item class, passing the constructor of the
-     * class I want to create works well.
+     * Creates the item and obstract instances using Klass (constructor).
+     * Each objects will have the different position.
      *
-     * Each items will have the different position by checking the positions of
-     * the existing instances, which are stored in 'arrayOfOccupiedPos' array.
-     *
-     * If no objects in 'arrayOfOccupiedPos' array have the same position
-     * with the newly generated position, 'newItemPosition', the position
+     * If no objects in the 'arrayOfOccupiedPos' array have the same position
+     * with the newly generated position, 'newPosition', the position
      * will be the position of the new instances.
      *
-     * After the function call, the item isntances in 'arrayOfOccupiedPos'
+     * After the function call, the objects in the 'arrayOfOccupiedPos' array
      * will be updated with the newly created position objects.
      *
-     * @param {Array} newItemsArray - Array that will store the newly generated
-     * instances.
+     * @param {Array} newItemsObstaclesArray - Array that will store
+     * the newly generated instances.
      * @param {Array} arrayOfOccupiedPositions - Array that contains the
      * position objects which indicate the positions that have been taken.
      * The objects in this array will be updated with all of the newly
      * created position objects.
-     * @param  {Number} num - How many gems you want to generate.
+     * @param  {Number} num - How many instances you want to generate.
      * @param {Constructor} Klass - Constructor of the class you want to create.
      * @return {undefined}
      */
-    var createItemsObstacles = function(newItemsArray, arrayOfOccupiedPos, num, Klass) {
+    var createItemsObstacles = function(newItemsObstaclesArray,
+        arrayOfOccupiedPos, num, Klass) {
         var cnt,
-            newItemPosition;
+            newPosition;
 
         for (cnt = 0; cnt < num; cnt++) {
-            newItemPosition = generateEffectiveRandomPosition(
+            newPosition = generateEffectiveRandomPosition(
                 arrayOfOccupiedPos);
-            newItemsArray.push(new Klass(newItemPosition));
+            newItemsObstaclesArray.push(new Klass(newPosition));
 
             // Save the position to update.
-            arrayOfOccupiedPos.push(newItemPosition);
+            arrayOfOccupiedPos.push(newPosition);
         }
     };
 
+    //TODO: refactor?
     /**
-     * Checks if the items in 'itemArray' has the same posiotion(x and y)
-     * with 'itemInQuestion'.
-     * Each object stored in 'itemArray' is assumed that it has already existed
+     * Checks if the object in 'objArray' has the same posiotion(x and y)
+     * with 'objInQuestion'.
+     * Each object stored in 'objArray' is assumed that it has already existed
      * (created) and has 'x' and 'y' properties.
-     * @param  {Array} itemArray - Array that stores the existing items.
-     * @param  {Object} itemInQuestion - Item to be checked
-     * @return {Boolean} True if the posion of 'itemInQuestion' matches the
-     * position of any items stored in 'itemArray'. False, otherwise.
+     * @param  {Array} objArray - Array that stores the existing objects.
+     * @param  {Object} objInQuestion - Object to be checked
+     * @return {Boolean} True if the posion of 'objInQuestion' matches the
+     * position of any objects stored in 'objArray'. False, otherwise.
      */
-    var checkIfExists = function(itemArray, itemInQuestion) {
+    var checkIfExists = function(objArray, objInQuestion) {
         var cnt,
-            itemExists;
+            objExists;
 
-        // If any item that has the same position is found,
+        // If any object that has the same position is found,
         // stop checking and return true.
-        for (cnt = 0; cnt < itemArray.length; cnt++) {
-            itemExists = itemArray[cnt];
+        for (cnt = 0; cnt < objArray.length; cnt++) {
+            objExists = objArray[cnt];
 
-            if (itemInQuestion.x === itemExists.x &&
-                itemInQuestion.y === itemExists.y) {
+            if (objInQuestion.x === objExists.x &&
+                objInQuestion.y === objExists.y) {
                 return true;
             }
         }
@@ -1581,14 +1585,13 @@
         });
     };
 
-    //TODO: mod comment
     /**
      * Call this function when you need to go to the next stage.
      * Currently, it does:
      * <ul>
      * <li>Increases the speeds of the enemies</li>
      * <li>Resets the player's position</li>
-     * <li>Regenerates the all the items</li>
+     * <li>Regenerates the all the items and obstacles</li>
      * </ul>
      * @return {undefined}
      */
@@ -1662,9 +1665,8 @@
          * @type {Number}
          */
         ENEMY_INITIAL_X = -200,
-        //TODO: mod comment
         /**
-         * Array that stores all the items, such as Gems, Hearts.
+         * Array that stores all the items, such as Gems, Hearts, and obstacles.
          * @type {Array}
          */
         allItemsObstacles = [],
@@ -1706,14 +1708,16 @@
          * @type {Selector}
          */
         selector = new Selector(),
-        //TODO: add comment
+        /**
+         * Number of Rock instances that will be created.
+         * @type {Number}
+         */
         NUM_ROCKS = 2;
 
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
 
-    //TODO: mod comment
-    // Instantiates all the items.
+    // Instantiates all the items and obstacles.
     generateItemsObstacles();
 
     // This listens for key presses and sends the keys to your
@@ -1747,7 +1751,6 @@
         }
     });
 
-    //TODO: mod comment
     // Store these properties to the global object to make them accessible from
     // engine.js.
     //
