@@ -1653,7 +1653,7 @@
          * Speed that will be added to increase the speed of a enemy.
          * @type {Number}
          */
-        ADDITIONAL_ENEMY_SPEED = 50,
+        ADDITIONAL_ENEMY_SPEED = 20,
         /**
          * Array that stores Enemy instances..
          * @type {Array}
