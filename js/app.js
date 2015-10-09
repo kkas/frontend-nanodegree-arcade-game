@@ -1532,7 +1532,6 @@
         }
     };
 
-    //TODO: refactor?
     /**
      * Checks if the object in 'objArray' has the same posiotion(x and y)
      * with 'objInQuestion'.
