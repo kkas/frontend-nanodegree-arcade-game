@@ -472,7 +472,6 @@
      */
     Player.prototype.hasReachedGoal = Player.prototype.isColliding;
 
-
     /**
      * Set the deltas for the 'x' and 'y'. When these values are set,
      * the position of the player will be updated in the next update().
