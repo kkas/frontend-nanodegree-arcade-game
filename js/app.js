@@ -1401,7 +1401,7 @@
      * </ul>
      * @return {undefined}
      */
-    var generateItems = function() {
+    var generateItemsObstacles = function() {
         var occupiedPositions = [],
             // Flag for generating the key object. If true, generate a key.
             // The probability to generate the key is 1/4.
@@ -1425,22 +1425,24 @@
         // the array (the 2nd method in the post).
         // http://stackoverflow.com/questions/1232040/how-to-empty-an-array-in-
         // javascript
-        allItems.length = 0;
+        allItemsObstacles.length = 0;
 
-        createItems(allItems, occupiedPositions, NUM_HEARTS, Heart);
-        createItems(allItems, occupiedPositions, NUM_GEMS, Gem);
+        createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_HEARTS, Heart);
+        createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_GEMS, Gem);
 
         // Generate the key only this flag is true.
         if (generateKeyThisTime) {
-            createItems(allItems, occupiedPositions, NUM_KEYS, Key);
+            createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_KEYS, Key);
         }
 
         // Generate the star only this flag is true.
         if (generateStarThisTime) {
-            createItems(allItems, occupiedPositions, NUM_STARS, Star);
+            createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_STARS, Star);
         }
 
-        // Sort the items in 'allItems' to drawing items correctly.
+        createItemsObstacles(allItemsObstacles, occupiedPositions, NUM_ROCKS, Rock);
+
+        // Sort the items in 'allItemsObstacles' to drawing items correctly.
         //
         // I think I need this sort in order to draw item objects correctly.
         // In engine.js, I call render() for items in the order that the
@@ -1457,11 +1459,12 @@
         // For the Array.prototype.sort(), I read the following manual in MDN.
         // // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Glo
         // bal_Objects/Array/sort
-        allItems.sort(function(a, b) {
+        allItemsObstacles.sort(function(a, b) {
             return a.y <= b.y ? -1 : 1;
         });
     };
 
+    //TODO: mod comment
     /**
      * Creates the item objects using Klass (constructor). Since all of the
      * classes are the derived from Item class, passing the constructor of the
@@ -1487,7 +1490,7 @@
      * @param {Constructor} Klass - Constructor of the class you want to create.
      * @return {undefined}
      */
-    var createItems = function(newItemsArray, arrayOfOccupiedPos, num, Klass) {
+    var createItemsObstacles = function(newItemsArray, arrayOfOccupiedPos, num, Klass) {
         var cnt,
             newItemPosition;
 
@@ -1498,31 +1501,6 @@
 
             // Save the position to update.
             arrayOfOccupiedPos.push(newItemPosition);
-        }
-    };
-
-    //TODO: add comment
-    var generateObstacles = function() {
-        var occupiedPositions = [];
-
-        allObstacles.length = 0;
-
-        createObstacles(allObstacles, occupiedPositions, NUM_ROCKS, Rock);
-    };
-
-    //TODO: add comment
-    //TODO: refactor with item
-    var createObstacles = function(newObsArray, arrayOfOccupiedPos, num, Klass) {
-        var cnt,
-            newObsPosition;
-
-        for (cnt = 0; cnt < num; cnt++) {
-            newObsPosition = generateEffectiveRandomPosition(
-                arrayOfOccupiedPos);
-            newObsArray.push(new Klass(newObsPosition));
-
-            // Save the position to update.
-            arrayOfOccupiedPos.push(newObsPosition);
         }
     };
 
@@ -1578,6 +1556,7 @@
         });
     };
 
+    //TODO: mod comment
     /**
      * Call this function when you need to go to the next stage.
      * Currently, it does:
@@ -1594,7 +1573,7 @@
 
         player.resetPosition();
 
-        generateItems();
+        generateItemsObstacles();
     };
 
     // Now instantiate your objects.
@@ -1658,11 +1637,12 @@
          * @type {Number}
          */
         ENEMY_INITIAL_X = -200,
+        //TODO: mod comment
         /**
          * Array that stores all the items, such as Gems, Hearts.
          * @type {Array}
          */
-        allItems = [],
+        allItemsObstacles = [],
         /**
          * Number of Hearts instances that will be created.
          * @type {Number}
@@ -1702,18 +1682,14 @@
          */
         selector = new Selector(),
         //TODO: add comment
-        NUM_ROCKS = 2,
-        //TODO: add comment
-        allObstacles = [];
+        NUM_ROCKS = 2;
 
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
 
+    //TODO: mod comment
     // Instantiates all the items.
-    generateItems();
-
-    // Instantiates all the obstacles.
-    generateObstacles();
+    generateItemsObstacles();
 
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
@@ -1746,6 +1722,7 @@
         }
     });
 
+    //TODO: mod comment
     // Store these properties to the global object to make them accessible from
     // engine.js.
     //
@@ -1760,8 +1737,7 @@
     // In addtion, I don't need to worry about tainting the global object.
     global.allEnemies = allEnemies;
     global.player = player;
-    global.allItems = allItems;
-    global.allObstacles = allObstacles;
+    global.allItemsObstacles = allItemsObstacles;
     global.score = score;
     global.message = message;
     global.selector = selector;

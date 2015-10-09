@@ -103,10 +103,11 @@ var Engine = (function(global) {
 
         player.update();
 
+        //TODO: mod comment
         // update() of 'item's need to be called after the player's update(),
         // so that the new position of the player is used to check if they are
         // collected.
-        allItems.forEach(function(item) {
+        allItemsObstacles.forEach(function(item) {
             item.update();
         });
     }
@@ -163,10 +164,11 @@ var Engine = (function(global) {
          * the render function you have defined.
          */
 
+        //TODO: mod comment
         // render() of 'item's are need to be called before Enemies' render(),
         // so that they will be drawn before other objects.
         // As a result, the enemies seem to run on top of them.
-        allItems.forEach(function(item) {
+        allItemsObstacles.forEach(function(item) {
             item.render();
         });
 
@@ -175,10 +177,6 @@ var Engine = (function(global) {
         });
 
         player.render();
-
-        allObstacles.forEach(function(obstacle) {
-            obstacle.render();
-        });
 
         score.render();
 
