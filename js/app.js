@@ -433,12 +433,10 @@
      * @return {undefined}
      */
     Player.prototype.resetPosition = function() {
-        this.setPosition(
-            {
-                'x': this.INITIAL_POSITION_X,
-                'y': this.INITIAL_POSITION_Y
-            }
-        );
+        this.setPosition({
+            'x': this.INITIAL_POSITION_X,
+            'y': this.INITIAL_POSITION_Y
+        });
     };
 
     /**
