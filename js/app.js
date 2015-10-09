@@ -1146,7 +1146,7 @@
                     // Settings for messageTop
                     // ----------------------
                     ctx.font = '70pt Impact';
-                    ctx.textAlign = "center";
+                    ctx.textAlign = 'center';
                     ctx.fillStyle = 'yellow';
                     ctx.strokeStyle = 'white';
                     ctx.lineWidth = 3;
@@ -1161,7 +1161,7 @@
                     // Settings for messageBottom
                     // ----------------------
                     ctx.font = '30pt Impact';
-                    ctx.textAlign = "center";
+                    ctx.textAlign = 'center';
                     ctx.fillStyle = 'yellow';
 
                     // Draw the message bottom 1
