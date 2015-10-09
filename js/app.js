@@ -1579,18 +1579,6 @@
     };
 
     /**
-     * Resets the positions of all the enemies.
-     * @return {undefined}
-     */
-    var resetEnemiesPositions = function() {
-        allEnemies.forEach(function(enemy){
-            enemy.setPosition(
-                generateRandomEnemyPosition()
-            );
-        });
-    };
-
-    /**
      * Increases the speeds of all the ememies.
      * @param  {Number} speed - The value that will be added to the current
      * enemies' speeds.
