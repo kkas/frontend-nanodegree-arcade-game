@@ -30,7 +30,7 @@
  *        the player. Only one instance should be created in the entire game.
  *    - methods: resetPosition(), update(), hasReachedGoal(), setDelta(),
  *               resetDelta(), canMoveOnX(), canMoveOnY(), setDeltaOrIgnore(),
- *               handleInput(), changePlayer()
+ *               handleInput(), changePlayer(), collidingWithObstacles()
  *
  * Item: Subclass of Entity class. The instances of this class represent
  *       the items the player collects.
@@ -444,7 +444,7 @@
      * Updates the properties of this instance.
      * Currently, this updates:
      * <ul>
-     * <li>the position of this instance</li>
+     * <li>the position of this instance (if not colliding into obstacles)</li>
      * <li>the delta counter to 0</li>
      * </ul>
      *
@@ -453,12 +453,15 @@
      * @return {undefined}
      */
     Player.prototype.update = function() {
-        this.setPosition(
-            {
+
+        // Update the player's position only if it is not colliding into any
+        // obstacles.
+        if (!this.collidingWithObstacles()) {
+            this.setPosition({
                 'x': this.x + this.xDelta,
                 'y': this.y + this.yDelta
-            }
-        );
+            });
+        }
 
         // Reset the delta counter.
         this.resetDelta();
@@ -630,6 +633,28 @@
      */
     Player.prototype.changePlayer = function(newSprite) {
         this.setSprite(newSprite);
+    };
+
+    /**
+     * Checks if this instance is colliding into any obstacles.
+     * @return {Boolean} True if the player is colliding into any obstacles.
+     * False, otherwise.
+     */
+    Player.prototype.collidingWithObstacles = function() {
+        var i;
+
+        for (i = 0; i < allItemsObstacles.length; i++) {
+            //TODO: refactor (nextMove()?)
+            if (allItemsObstacles[i] instanceof Obstacle &&
+                allItemsObstacles[i].x == this.x + this.xDelta &&
+                allItemsObstacles[i].y == this.y + this.yDelta) {
+
+                console.log('player is colliding into an obstacle');
+                // Prevent the player to move this location.
+                return true;
+            }
+        }
+        return false;
     };
 
     /**
