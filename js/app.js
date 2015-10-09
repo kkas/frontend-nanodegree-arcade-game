@@ -459,8 +459,8 @@
         // obstacles.
         if (!this.collidingWithObstacles()) {
             this.setPosition({
-                'x': this.nextMoveOnX,
-                'y': this.nextMoveOnY
+                'x': this.nextMoveOnX(),
+                'y': this.nextMoveOnY()
             });
         }
 
@@ -649,8 +649,8 @@
             // The array contains instances of Item and Obstacle classes.
             // I want to check only obstacles.
             if (allItemsObstacles[i] instanceof Obstacle &&
-                allItemsObstacles[i].x == this.nextMoveOnX &&
-                allItemsObstacles[i].y == this.nextMoveOnY) {
+                allItemsObstacles[i].x == this.nextMoveOnX() &&
+                allItemsObstacles[i].y == this.nextMoveOnY()) {
 
                 console.log('player is colliding into an obstacle');
                 // Prevent the player to move this location.
