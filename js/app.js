@@ -5,13 +5,13 @@
  * <Class Relationship>
  * <Entity>
  *    |
- *    ---------------------
- *    |                   |
- * <Charactor>          <Item>
- *      |                 |
- *      ---------         -------------------------
- *      |       |         |       |        |      |
- *   <Enemy> <Player>  <Heart>  <Gem>    <Key>  <Star>
+ *    ----------------------------------------------------------
+ *    |                   |                                    |
+ * <Charactor>          <Item>                             <Obstacle>
+ *      |                 |                                    |
+ *      ---------         -------------------------            |
+ *      |       |         |       |        |      |            |
+ *   <Enemy> <Player>  <Heart>  <Gem>    <Key>  <Star>       <Rock>
  *
  * * <<other classes>>
  *   <Score>, <Message>, <Selector>
@@ -46,6 +46,14 @@
  *    - methods: <none>
  * Star: Subclas of Item class. The instances of this class represent the
  *      Star-shaped objects the player collects.
+ *    - methods: <none>
+ *
+ * Obstacle: Sublcass of Entity class. The instances of this class represent
+ *           the obstacles. The player cannot move if there is an obstacle
+ *           where the player wants to move.
+ *    - methods: update(), render()
+ * Rock: Subclass of Obstacle. The instances of this class represent the Rock-
+ *       shaped obstacles in the game.
  *    - methods: <none>
  *
  * Score: The instance of this class holds and controls the score in this game.
@@ -860,6 +868,75 @@
     Star.prototype = Object.create(Item.prototype);
     Star.prototype.constructor = Star;
 
+    //TODO: add comment
+    /**
+     * Item class. This class is the superclass of all the items in this game.
+     *
+     * This class is also a subclass of Entity class.
+     *
+     * @constructor
+     * @return {Item} instance of this class. (with constructor mode)
+     */
+    var Obstacle = function(position) {
+        // Initialize this instance using the superclass's constructor
+        Entity.call(this);
+
+        // Set the initial position.
+        this.setPosition(position);
+    };
+    Obstacle.prototype = Object.create(Entity.prototype);
+    Obstacle.prototype.constructor = Obstacle;
+
+    //TODO: add comment
+    /**
+     * Updates the properties of this intance.
+     * Currently, this function updates:
+     * <ul>
+     * <li>this.collected with the result returned from the collision checking
+     *  with the player.</li>
+     * <li>the scores of the player (when this instance has been collected)</li>
+     * </ul>
+     * @return {undefined}
+     */
+    Obstacle.prototype.update = function() {
+        // if (this.isColliding(player)) {
+
+        // }
+    };
+
+    /**
+     * Renders this instance on the screen.
+     * @return {undefined}
+     */
+    Obstacle.prototype.render = function() {
+        ctx.drawImage(
+            Resources.get(this.sprite),
+            this.x,
+            this.y - SPRITE_TOP_PADDING);
+    };
+
+     //TODO: add comment
+    /**
+     * Item class. This class is the superclass of all the items in this game.
+     *
+     * This class is also a subclass of Entity class.
+     *
+     * @constructor
+     * @return {Item} instance of this class. (with constructor mode)
+     */
+    var Rock = function(position) {
+        // Initialize this instance using the superclass's constructor
+        Obstacle.call(this, position);
+
+        // Set the sprite of this instance.
+        this.setSprite('images/Rock.png');
+
+        // Set the initial position.
+        this.setPosition(position);
+    };
+    Rock.prototype = Object.create(Obstacle.prototype);
+    Rock.prototype.constructor = Rock;
+
     /**
      * Score class.
      *
@@ -1313,6 +1390,7 @@
         return newItemPosition;
     };
 
+    //TODO: mod this comment
     /**
      * Generates item instances.
      * Currently, this creates the following items:
@@ -1420,6 +1498,31 @@
 
             // Save the position to update.
             arrayOfOccupiedPos.push(newItemPosition);
+        }
+    };
+
+    //TODO: add comment
+    var generateObstacles = function() {
+        var occupiedPositions = [];
+
+        allObstacles.length = 0;
+
+        createObstacles(allObstacles, occupiedPositions, NUM_ROCKS, Rock);
+    };
+
+    //TODO: add comment
+    //TODO: refactor with item
+    var createObstacles = function(newObsArray, arrayOfOccupiedPos, num, Klass) {
+        var cnt,
+            newObsPosition;
+
+        for (cnt = 0; cnt < num; cnt++) {
+            newObsPosition = generateEffectiveRandomPosition(
+                arrayOfOccupiedPos);
+            newObsArray.push(new Klass(newObsPosition));
+
+            // Save the position to update.
+            arrayOfOccupiedPos.push(newObsPosition);
         }
     };
 
@@ -1597,13 +1700,20 @@
          * Only one instance of this should be created.
          * @type {Selector}
          */
-        selector = new Selector();
+        selector = new Selector(),
+        //TODO: add comment
+        NUM_ROCKS = 2,
+        //TODO: add comment
+        allObstacles = [];
 
     // Instantiates all of the enemies.
     generateEnemies(allEnemies, NUM_ENEMIES);
 
     // Instantiates all the items.
     generateItems();
+
+    // Instantiates all the obstacles.
+    generateObstacles();
 
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
@@ -1651,6 +1761,7 @@
     global.allEnemies = allEnemies;
     global.player = player;
     global.allItems = allItems;
+    global.allObstacles = allObstacles;
     global.score = score;
     global.message = message;
     global.selector = selector;

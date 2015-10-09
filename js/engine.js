@@ -176,6 +176,10 @@ var Engine = (function(global) {
 
         player.render();
 
+        allObstacles.forEach(function(obstacle) {
+            obstacle.render();
+        });
+
         score.render();
 
         message.render();
@@ -209,7 +213,8 @@ var Engine = (function(global) {
         'images/Gem Orange.png',
         'images/Key.png',
         'images/Selector.png',
-        'images/Star.png'
+        'images/Star.png',
+        'images/Rock.png'
     ]);
     Resources.onReady(init);
 
