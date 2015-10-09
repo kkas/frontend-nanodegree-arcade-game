@@ -459,8 +459,8 @@
         // obstacles.
         if (!this.collidingWithObstacles()) {
             this.setPosition({
-                'x': this.x + this.xDelta,
-                'y': this.y + this.yDelta
+                'x': this.nextMoveOnX,
+                'y': this.nextMoveOnY
             });
         }
 
@@ -645,10 +645,12 @@
         var i;
 
         for (i = 0; i < allItemsObstacles.length; i++) {
-            //TODO: refactor (nextMove()?)
+
+            // The array contains instances of Item and Obstacle classes.
+            // I want to check only obstacles.
             if (allItemsObstacles[i] instanceof Obstacle &&
-                allItemsObstacles[i].x == this.x + this.xDelta &&
-                allItemsObstacles[i].y == this.y + this.yDelta) {
+                allItemsObstacles[i].x == this.nextMoveOnX &&
+                allItemsObstacles[i].y == this.nextMoveOnY) {
 
                 console.log('player is colliding into an obstacle');
                 // Prevent the player to move this location.
@@ -656,6 +658,24 @@
             }
         }
         return false;
+    };
+
+    /**
+     * Returns the next possible move on x-axis.
+     * @return {Integer} Integer that represents the position of this instance
+     * on x-axis.
+     */
+    Player.prototype.nextMoveOnX = function() {
+        return this.x + this.xDelta;
+    };
+
+    /**
+     * Returns the next possible move on y-axis.
+     * @return {Integer} Integer that represents the position of this instance
+     * on y-axis.
+     */
+    Player.prototype.nextMoveOnY = function() {
+        return this.y + this.yDelta;
     };
 
     /**
