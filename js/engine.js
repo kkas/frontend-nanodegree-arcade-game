@@ -236,7 +236,7 @@ var Engine = (function(global) {
         'top': 0,
         'bottom': IMAGE_HEIGHT,
         'left': 0,
-        'right': global.canvasSize.effectiveWidth
+        'right': canvasSize.effectiveWidth
     };
 
     global.IMAGE_HEIGHT = IMAGE_HEIGHT;
