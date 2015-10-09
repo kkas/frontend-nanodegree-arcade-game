@@ -14,7 +14,7 @@
  *   <Enemy> <Player>  <Heart>  <Gem>    <Key>  <Star>
  *
  * * <<other classes>>
- *   <Score>, <Message>
+ *   <Score>, <Message>, <Selector>
  *
  * Entity: Superclass of Charactor and Item classes. This class contains common
  *         properties and methods to be used as entity in this game.
