@@ -4,8 +4,34 @@
     <meta charset="UTF-8">
     <title>Effective JavaScript: Frogger</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Google fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Freckle+Face' rel='stylesheet' type='text/css'>
 </head>
 <body>
+    <div id="wrapper">
+      <section class="game-canvas"></section>
+      <aside class="help">
+        <div class="objective">
+          <p>Get the high score! Avoid bugs and rocks and collect the items:</p>
+          <ul>
+            <li>Heart: 5 pts</li>
+            <li>Gem: 10 pts</li>
+            <li>Star: 30pts (only appears once in a while)</li>
+            <li>Key: 100pts (only appears once in a while)</li>
+          </ul>
+        </div>
+        <div class="how-to">
+          <p>How to Play</p>
+          <ul>
+            <li>'up' (arrow): moves the player to up</li>
+            <li>'down' (arrow): moves the player to down</li>
+            <li>'right' (arrow): moves the player to right</li>
+            <li>'left' (arrow): moves the player to left</li>
+            <li>'shift': Change the character you play!</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
     <script src="js/resources.js"></script>
     <script src="js/app.js"></script>
     <script src="js/engine.js"></script>
